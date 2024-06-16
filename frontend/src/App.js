@@ -13,7 +13,7 @@ function App() {
         <Grid
           item xs={7.5} md={7.5} lg={7.5} sx={{ background: "blue" }}
         >
-
+          
           <Box>Fin goals</Box>
         
         </Grid>
