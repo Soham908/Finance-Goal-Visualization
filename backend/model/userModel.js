@@ -1,19 +1,30 @@
-// import { Schema, model } from "mongoose";
-const { default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 
+const goalSchema = new mongoose.Schema({
+  goalName: { type: String, required: true },
+  goalDescription: { type: String },
+  targetAmount: { type: Number, required: true },
+  currentAmount: { type: Number, default: 0 },
+  goalTags: { type: [String] },
+  goalPriority: { type: String },
+});
 
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema(
+  {
     username: {
-        type: String,
-        require: true
+      type: String,
+      required: true,
     },
     password: {
-        type: String,
-        require: true
-    }
-}, {
-    collection: "userData"
-})
+      type: String,
+      required: true,
+    },
+    goals: [goalSchema],
+  },
+  {
+    collection: "userData",
+  }
+);
 
-const userModel = mongoose.model("user-model", userSchema)
-module.exports = userModel
+const userModel = mongoose.model("User", userSchema);
+module.exports = userModel;

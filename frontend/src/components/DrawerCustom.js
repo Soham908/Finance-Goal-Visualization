@@ -34,7 +34,7 @@ const DrawerCustom = () => {
             Soham 
           </Typography>
         </Toolbar>
-        <Divider />
+        <Divider sx={{ backgroundColor: 'wheat' }} />
         <List>
           {
           [

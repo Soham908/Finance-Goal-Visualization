@@ -3,7 +3,7 @@ const { createGoal, fetchGoals, fetchGoalById } = require('../controller/goalCon
 const router = express.Router()
 
 router.post("/create-goal", createGoal)
-router.get("/get-goals", fetchGoals)
+router.get("/get-goals/:username", fetchGoals)
 router.get("/get-goal/:goalName", fetchGoalById)
 
 module.exports = router

@@ -1,20 +1,22 @@
 import { Grid, Box } from "@mui/material";
 import DrawerCustom from "./components/DrawerCustom";
+import GoalForm from "./components/GoalForm";
 
 
 function App() {
 
   return (
-    <Box sx={{ display: "flex", height: '100vh', background: 'black' }}>
+    <Box sx={{ display: "flex", height: '100vh' }}>
       
       <DrawerCustom />
 
       <Grid container direction={"column"} sx={{ flexGrow: 1 }} component="main">
         <Grid
-          item xs={7.5} md={7.5} lg={7.5} sx={{ background: "blue" }}
+          item xs={7.5} md={7.5} lg={7.5} 
         >
           
-          <Box>Fin goals</Box>
+          {/* <Box>Fin goals</Box> */}
+          <GoalForm />
         
         </Grid>
         
