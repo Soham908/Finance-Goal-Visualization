@@ -1,9 +1,40 @@
+import { Grid, Box } from "@mui/material";
+import DrawerCustom from "./components/DrawerCustom";
+
 
 function App() {
+
   return (
-    <div>
-      Finance Visualization
-    </div>
+    <Box sx={{ display: "flex", height: '100vh' }}>
+      
+      <DrawerCustom />
+
+      {/* main area */}
+      {/* <Box
+          component="main"
+          sx={{ flexGrow: 1, p: 3, backgroundColor: "black" }}
+        ></Box> */}
+      <Grid container p={1} direction={"column"} sx={{ flexGrow: 1, height: '100%' }} component="main">
+        <Grid
+          item
+          xs={7.5}
+          md={7.5}
+          lg={7.5}
+          sx={{ background: "blue", borderRadius: 4 }}
+        >
+          <Box>Fin goals</Box>
+        </Grid>
+        <Grid
+          item
+          xs={4.5}
+          md={4.5}
+          lg={4.5}
+          sx={{ background: "green"}}
+        >
+          <Box>Articles</Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
 
