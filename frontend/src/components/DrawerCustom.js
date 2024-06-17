@@ -1,73 +1,100 @@
-import { Drawer, Toolbar, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Typography, IconButton } from "@mui/material";
-import { useNavigate } from 'react-router-dom'
-import HomeIcon from '@mui/icons-material/Home';
-import LoginIcon from '@mui/icons-material/Login';
+import React, { useContext, useState } from "react";
+import {
+  Drawer,
+  List,
+  ListItemText,
+  Toolbar,
+  Divider,
+  ListItemButton,
+  ListItemIcon,
+  useTheme,
+  useMediaQuery,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import LoginIcon from "@mui/icons-material/Login"
+import MenuIcon from "@mui/icons-material/Menu"
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import SavingsIcon from '@mui/icons-material/Savings';
 import ArticleIcon from '@mui/icons-material/Article';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from "react-router-dom";
 
 const DrawerCustom = () => {
-    const drawerWidth = '15%';
-    const navigate = useNavigate()
+
+  const navigate = useNavigate()
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+  const toggleDrawer = () => {
+    setOpenDrawer(!openDrawer);
+  };
+
   return (
+    <>
+     {isSmallScreen ? (
+        <IconButton onClick={toggleDrawer} sx={{ color: 'white', position: 'fixed', top: 10, left: 10 }}>
+          <MenuIcon />
+        </IconButton>
+      ) : null}
     <Drawer
-    sx={{
-      width: "17%",
-      flexShrink: 0,
-      [`& .MuiDrawer-paper`]: {
-        width: "17%",
-        boxSizing: "border-box",
-        backgroundColor: "#f4f4f4",
-        padding: "0.5%",
-        color: "white",
-        backgroundColor: "#0B0D0E",
-      },
-    }}
-        variant="permanent"
-        anchor="left"
-      >
-        <Toolbar>
-          <IconButton onClick={() => {navigate("/profile")} }>
-            <AccountCircleIcon sx={{ width: 33, height: 33, color: 'wheat' }}/>
-          </IconButton>
+    variant={isSmallScreen ? 'temporary' : 'permanent'}
+    open={openDrawer}
+    onClose={toggleDrawer}
+      sx={{
+        width: {xs: "60%",sm: "30%", md: "25%", lg: "16%"},
+        flexShrink: 0,
+        [`& .MuiDrawer-paper`]: {
+          width: {xs: "60%",sm: "30%", md: "25%", lg: "16%"},
+          boxSizing: "border-box",
+          backgroundColor: "#f4f4f4",
+          padding: "0.5%",
+          color: "white",
+          backgroundColor: "#0B0D0E",
+        },
+      }}
+    >
+      <Toolbar>
+          <AccountCircleIcon sx={{ width: 33, height: 33, color: 'wheat' }}/>
           <Typography sx={{ marginLeft: 1, fontSize: 22 }}>
-            Soham 
+            Soham
           </Typography>
         </Toolbar>
-        <Divider sx={{ backgroundColor: 'wheat' }} />
-        <List>
-          {
-          [
+      <Divider sx={{ backgroundColor: 'wheat' }}/>
+      <List>
+        {
+        [
             { text: "HomePage", icon: <HomeIcon />, onClick: () => {navigate("/")} },
             { text: "Finance Goals", icon: <SavingsIcon />, onClick: () => {navigate("/finance-goals")}},
             { text: "Articles", icon: <ArticleIcon />, onClick: () => {navigate("/articles")}},
             { text: "Login", icon: <LoginIcon />, onClick: () => {navigate("/login")}},
-          ]
-          .map((item, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemButton
-              sx={{
-                padding: "8px 16px",
-                "&:hover": { backgroundColor: "black" },
-                "&.Mui-selected": {
-                  backgroundColor: "#d0d0d0",
-                  "&:hover": { backgroundColor: "#c0c0c0" },
-                },
-                borderRadius: 4,
-                marginTop: "5%",
-              }}
-                onClick={item.onClick}
-              >
-                <ListItemIcon sx={{ minWidth: 36, color: "white" }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-  )
-}
+          ].map((item, index) => (
+          <ListItemButton
+            key={item.text}
+            sx={{
+              padding: "8px 16px",
+              "&:hover": { backgroundColor: "black" },
+              "&.Mui-selected": {
+                backgroundColor: "#d0d0d0",
+                "&:hover": { backgroundColor: "#c0c0c0" },
+              },
+              borderRadius: 4,
+              marginTop: "5%",
+            }}
+            onClick={item.onClick}
+          >
+            <ListItemIcon sx={{ minWidth: 36, color: "white" }}>
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItemButton>
+        ))}
+      </List>
+    </Drawer>
 
-export default DrawerCustom
+    </>
+  );
+};
+
+export default DrawerCustom;
