@@ -11,7 +11,7 @@ exports.createGoal = async (req, res) => {
                 goalDescription: data.goalDescription,
                 targetAmount: data.targetAmount,
                 currentAmount: data.currentAmount,
-                goalTags: data.goalTags,
+                goalTags: data.goalTag,
                 goalPriority: data.goalPriority
         }}
     },
@@ -19,7 +19,6 @@ exports.createGoal = async (req, res) => {
 )
 
     res.json(newGoal)
-    console.log(newGoal);
 }
 
 exports.fetchGoals = async (req, res) => {

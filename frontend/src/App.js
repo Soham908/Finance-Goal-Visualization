@@ -5,7 +5,6 @@ import { Route, Routes } from "react-router-dom";
 import Finance_Goals from "./pages/Finance_Goals";
 import Homepage from "./pages/Homepage";
 import Articles from "./pages/Articles";
-import ComplexLayout from "./components/TrialLayout";
 
 
 function App() {

@@ -34,7 +34,7 @@ const DrawerCustom = () => {
   return (
     <>
      {isSmallScreen ? (
-        <IconButton onClick={toggleDrawer} sx={{ color: 'white', position: 'fixed', top: 10, left: 10 }}>
+        <IconButton onClick={toggleDrawer} sx={{ color: 'black', position: 'fixed', top: 10, left: 10 }}>
           <MenuIcon />
         </IconButton>
       ) : null}
@@ -65,10 +65,10 @@ const DrawerCustom = () => {
       <List>
         {
         [
-            { text: "HomePage", icon: <HomeIcon />, onClick: () => {navigate("/")} },
-            { text: "Finance Goals", icon: <SavingsIcon />, onClick: () => {navigate("/finance-goals")}},
-            { text: "Articles", icon: <ArticleIcon />, onClick: () => {navigate("/articles")}},
-            { text: "Login", icon: <LoginIcon />, onClick: () => {navigate("/login")}},
+            { text: "HomePage", icon: <HomeIcon />, onClick: () => {navigate("/"); toggleDrawer(); } },
+            { text: "Finance Goals", icon: <SavingsIcon />, onClick: () => {navigate("/finance-goals"); toggleDrawer(); }},
+            { text: "Articles", icon: <ArticleIcon />, onClick: () => {navigate("/articles"); toggleDrawer(); }},
+            { text: "Login", icon: <LoginIcon />, onClick: () => {navigate("/login"); toggleDrawer(); }},
           ].map((item, index) => (
           <ListItemButton
             key={item.text}
