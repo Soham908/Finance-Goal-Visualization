@@ -107,6 +107,7 @@ const GoalForm = () => {
             value={goal.goalName}
             onChange={handleChange}
             required
+            autoCapitalize="true"
             autoComplete="off"
           />
           <TextField

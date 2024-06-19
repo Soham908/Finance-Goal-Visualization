@@ -7,6 +7,7 @@ const goalSchema = new mongoose.Schema({
   currentAmount: { type: Number, default: 0 },
   goalTags: { type: [String] },
   goalPriority: { type: String },
+  bankVerification: { type: String }
 });
 
 const userSchema = new mongoose.Schema(
