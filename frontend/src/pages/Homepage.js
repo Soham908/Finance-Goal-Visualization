@@ -5,12 +5,15 @@ import Articles from "./Articles";
 const Homepage = () => {
   return (
     <Grid container display="flex" component="main">
-      <Grid item xs={12} sx={{ background: "blue" }}>
-        <Finance_Goals />
+      <Grid container item>
+        <Grid item xs={12} sx={{ background: "blue" }}>
+          <Finance_Goals sliceNum={3} />
+        </Grid>
       </Grid>
-
-      <Grid item xs={12} sx={{ background: "green" }}>
-        <Articles />
+      <Grid container item>
+        <Grid item xs={12} sx={{ background: "green" }}>
+          <Articles sliceNum={4} />
+        </Grid>
       </Grid>
     </Grid>
   );

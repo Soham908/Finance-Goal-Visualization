@@ -72,7 +72,7 @@ const GoalCard = ({ goal, onEdit, onDelete }) => {
   const progress = (currentAmount / targetAmount) * 100;
 
   return (
-    <Card sx={{ height: '100%', width: '100%', display: "flex", flexDirection: "column", justifyContent: "space-evenly", marginBottom: 2 }}>
+    <Card sx={{ height: '100%', width: '100%', display: "flex", flexDirection: "column", justifyContent: "space-evenly", marginBottom: 2, borderRadius: 8, padding: 1 }}>
       <CardHeader
         action={
           <>
