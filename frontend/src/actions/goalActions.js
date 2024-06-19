@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_PORT;
+const url = process.env.REACT_APP_URL;
 
 export const createGoalAction = async (data) => {
   try {
@@ -8,7 +8,7 @@ export const createGoalAction = async (data) => {
     return newGoal.data;
   } catch (error) {
     console.log(error);
-    return {error: "error occured"}
+    return {error: "error occured" + error}
   }
 };
 
@@ -18,6 +18,6 @@ export const fetchGoalAction = async (username) => {
     return goals.data;
   } catch (error) {
     console.log(error);
-    return {error: "error occured"}
+    return {error: "error occured" + error}
   }
 };

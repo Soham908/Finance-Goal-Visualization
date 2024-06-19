@@ -13,7 +13,7 @@ exports.registerUser = async (req, res) => {
       password: req.body.password,
     });
     console.log(register);
-    res.json(register);
+    res.json({register, success: true});
   }
 };
 

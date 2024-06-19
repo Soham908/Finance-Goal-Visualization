@@ -5,6 +5,8 @@ import { Route, Routes } from "react-router-dom";
 import Finance_Goals from "./pages/Finance_Goals";
 import Homepage from "./pages/Homepage";
 import Articles from "./pages/Articles";
+import LoginPage from "./auth/LoginPage";
+import RegisterPage from "./auth/RegisterPage";
 
 
 function App() {
@@ -18,8 +20,9 @@ function App() {
         <Route path="/finance-goals" element={<Finance_Goals />} />
         <Route path="/goal-form" element={<GoalForm />} />
         <Route path="/articles" element={<Articles />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
-      {/* <Homepage /> */}
     </Box>
   );
 }

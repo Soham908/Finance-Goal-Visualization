@@ -30,7 +30,7 @@ const Articles = ({ sliceNum }) => {
       <Box>
         <Grid container justifyContent='space-evenly'>
           {articles?.slice(0, slice).map((article, index) => (
-            <Grid item marginTop={10} sx={{ width: { xs: '90%', sm: '45%', md: '23%' } }}>
+            <Grid item key={index} marginTop={10} sx={{ width: { xs: '90%', sm: '45%', md: '23%' } }}>
               <ArticleCard article={article} />
             </Grid>
           ))}

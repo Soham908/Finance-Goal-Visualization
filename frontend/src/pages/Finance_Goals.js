@@ -34,7 +34,7 @@ const Finance_Goals = ({ sliceNum }) => {
         {
           goalData?.slice(0, slice).map((value, index) => {
             return(
-              <Grid item margin={1} sx={{ width: { xs: '90%', sm: '45%', md: '30%' } }}>
+              <Grid item key={index} margin={1} sx={{ width: { xs: '90%', sm: '45%', md: '30%' } }}>
               <GoalCard goal={value} />
               </Grid>
             )
