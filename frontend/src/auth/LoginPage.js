@@ -27,7 +27,7 @@ const LoginPage = () => {
       };
       const loginHandle = await userLogin(data);
       if (loginHandle.success) {
-        localStorage.setItem("userCred", loginHandle.login.username);
+        localStorage.setItem("userCredentialGoal", loginHandle.login.username);
         navigate("/");
       } else {
         setSnackbarOpen(true);

@@ -19,6 +19,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import SavingsIcon from '@mui/icons-material/Savings';
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../App";
 
 const DrawerCustom = () => {
 
@@ -26,10 +27,12 @@ const DrawerCustom = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const { userData } = useContext(UserContext)
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
   };
+  console.log(userData);
 
   return (
     <>
@@ -58,7 +61,7 @@ const DrawerCustom = () => {
       <Toolbar>
           <AccountCircleIcon sx={{ width: 33, height: 33, color: 'wheat' }}/>
           <Typography sx={{ marginLeft: 1, fontSize: 22 }}>
-            Soham
+            {userData?.username}
           </Typography>
         </Toolbar>
       <Divider sx={{ backgroundColor: 'wheat' }}/>

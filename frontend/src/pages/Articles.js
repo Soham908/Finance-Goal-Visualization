@@ -1,39 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { Grid, Container, Typography, Box } from '@mui/material';
-import articlesData from './articles.json'; // Importing JSON data
-import ArticleCard from '../components/ArticleCard';
+import React, { useState, useEffect } from "react";
+import { Grid, Typography, Box } from "@mui/material";
+import articlesData from "./articles.json"; 
+import ArticleCard from "../components/ArticleCard";
 
-const Articles = ({ sliceNum }) => {
+const Articles = ({ category }) => {
   const [articles, setArticles] = useState([]);
-  var slice = sliceNum || articles?.length
+  var slice = category || articles?.length;
 
   useEffect(() => {
-    if(sliceNum)
-      setArticles(articlesData.savings); // Assuming your JSON structure is { "articles": [...] }
-    else
-      setArticles(articlesData)
-    slice = articles?.length
+    if (category)
+      setArticles(
+        articlesData.savings
+      );
+    else setArticles(articlesData.savings);
+    slice = articles?.length;
   }, []);
 
   return (
-    <Grid container display="flex" direction="column">
-      {console.log(articles)}
-      {
-        !sliceNum &&
-      <>
-      <Typography variant="h4" gutterBottom>Related Articles</Typography>
-      <Typography variant="body1" color="textSecondary" paragraph>
-        Learn more about savings, investment, vacation planning, home buying, and car ownership.
-      </Typography>
-      </>
-      }
+    <Grid container display="flex">
+      {!category && (
+        <Grid item paddingTop={6} paddingLeft={6} sx={{ backgroundColor: 'green' }}>
+          <Typography variant="h4" gutterBottom>
+            Related Articles
+          </Typography>
+          <Typography variant="body1" color="textSecondary" paragraph>
+            Learn more about savings, investment, vacation planning, home
+            buying, and car ownership.
+          </Typography>
+        </Grid>
+      )}
       <Box>
-        <Grid container justifyContent='space-evenly'>
-          {articles?.slice(0, slice).map((article, index) => (
-            <Grid item key={index} marginTop={10} sx={{ width: { xs: '90%', sm: '45%', md: '23%' } }}>
-              <ArticleCard article={article} />
-            </Grid>
-          ))}
+        <Grid container justifyContent="space-evenly">
+          {
+            category ? 
+            <Box>
+              <Grid container justifyContent='space-evenly'>
+                {articlesData[category].map((article, index) => (
+                  <Grid item key={index} marginTop={5} sx={{ width: { xs: '90%', sm: '45%', md: '23%' } }}>
+                    <ArticleCard article={article} />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+            :
+          Object.keys(articlesData).map((key) =>
+            articlesData[key].map((article, index) => (
+              <Grid
+                item
+                key={index}
+                marginTop={5}
+                sx={{ width: { xs: "90%", sm: "45%", md: "23%" } }}
+              >
+                <ArticleCard article={article} />
+              </Grid>
+              ))
+            )
+          }
         </Grid>
       </Box>
     </Grid>

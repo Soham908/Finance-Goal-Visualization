@@ -13,14 +13,15 @@ const Finance_Goals = ({ sliceNum }) => {
     goalTag: [],
     goalPriority: "",
   }])
+  const username = localStorage.getItem('userCredentialGoal')
 
   var slice = sliceNum || goalData?.length
 
   useEffect(() => {
     const getGoalData = async () => {
-      const response = await fetchGoalAction("Soham")
+      const response = await fetchGoalAction(username)
       console.log(response);
-      setGoalData(response.goals)
+      setGoalData(response?.goals)
     }
     getGoalData()
     slice = goalData.length

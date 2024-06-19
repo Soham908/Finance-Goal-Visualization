@@ -12,7 +12,7 @@ const Homepage = () => {
       </Grid>
       <Grid container item>
         <Grid item xs={12} sx={{ background: "green" }}>
-          <Articles sliceNum={4} />
+          <Articles category="savings" />
         </Grid>
       </Grid>
     </Grid>

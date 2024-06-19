@@ -6,11 +6,13 @@ import {
   Button,
   Typography,
   Link,
+  Checkbox,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { TextFieldStyle } from "../constants/Constants";
 import SlideSnackbar from "../components/SlideSnackbar";
 import { userRegister } from "../actions/userAuthAction";
+import { userRegisterWithBankAPI } from "../actions/userBankAuthAction";
 
 const RegisterPage = () => {
   const [username, setUsername] = useState("");
@@ -20,20 +22,39 @@ const RegisterPage = () => {
   const [snackbarMessage, setSnackbarMessage] = useState(
     "Please fill all fields !"
   );
+  const [checked, setChecked] = useState(false)
+
+  const register = async (bankVerified) => {
+    const data = {
+      username,
+      password,
+      bankVerified
+    };
+    const registerHandle = await userRegister(data);
+    if (registerHandle.success) {
+      localStorage.setItem("userCredentialGoal", registerHandle.register.username);
+      navigate("/");
+    }
+  }
 
   const handleSubmit = async () => {
-    if (username && password) {
+    if(checked){
       const data = {
         username,
         password,
       };
-      const registerHandle = await userRegister(data);
-      if (registerHandle.success) {
-        localStorage.setItem("userCred", registerHandle.register.username);
-        navigate("/");
+      const registerWithBank = await userRegisterWithBankAPI(data)
+      console.log(registerWithBank);
+      if(registerWithBank.success){
+        register(true)
       }
-    } else {
-      setSnackbarOpen(true)
+    }
+    else{
+      if (username && password) {
+        register(false)
+      } else {
+        setSnackbarOpen(true)
+      }
     }
   };
 
@@ -100,6 +121,14 @@ const RegisterPage = () => {
           Register
         </Button>
         <Typography variant="h6" sx={{ margin: "5%" }}>
+          Have an account on our Banking App ?
+          <Checkbox 
+            onChange={(event) => setChecked(event.target.checked)}
+            checked={checked}
+            sx={{ backgroundColor: 'white' }}
+          />
+        </Typography>
+        <Typography variant="h6" >
           Already have an account ? <Link onClick={handleRedirect}>Login</Link>
         </Typography>
       </Box>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   TextField,
   Button,
@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { createGoalAction } from "../actions/goalActions";
 import DecimalValidatedNumberInput from "./TagValidatedTextField";
+import { UserContext } from "../App";
 
 const priorities = ["Low", "Medium", "High"];
 const tags = [
@@ -39,6 +40,7 @@ const GoalForm = () => {
 
   const [selectOpen, setSelectOpen] = useState(false);
   const [checked, setChecked] = useState(false)
+  const { userData } = useContext(UserContext)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,7 +50,7 @@ const GoalForm = () => {
   const onSubmit = async () => {
     const data = {
       ...goal,
-      username: "Soham",
+      username: userData?.username,
     };
     const response = await createGoalAction(data);
     console.log(response);
