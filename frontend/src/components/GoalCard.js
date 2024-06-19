@@ -72,10 +72,21 @@ const GoalCard = ({ goal, onEdit, onDelete }) => {
   const progress = (currentAmount / targetAmount) * 100;
 
   return (
-    <Card sx={{ height: '100%', width: '100%', display: "flex", flexDirection: "column", justifyContent: "space-evenly", marginBottom: 2, borderRadius: 8, padding: 1 }}>
+    <Card elevation={5} sx={{ height: '100%', width: '100%', display: "flex", flexDirection: "column", justifyContent: "space-evenly", marginBottom: 2, borderRadius: 8, padding: 1 }}>
       <CardHeader
         action={
-          <>
+          <Box display='flex' alignItems='center'>
+          <Tooltip
+              title={
+                bankVerification === "verified"
+                  ? "Bank Verified"
+                  : bankVerification === "pending"
+                  ? "Verification Pending"
+                  : "Bank Verification Needed"
+              }
+            >
+              <Box marginTop={0.6}> {getVerificationIcon()} </Box>
+            </Tooltip>
             <IconButton aria-label="settings" onClick={handleMenuClick}>
               <MoreVert />
             </IconButton>
@@ -91,24 +102,13 @@ const GoalCard = ({ goal, onEdit, onDelete }) => {
                 <Delete sx={{ marginRight: 1 }} /> Delete
               </MenuItem>
             </Menu>
-          </>
+          </Box>
         }
         title={
-          <Box display="flex" alignItems="center">
+          <Box display="flex" alignItems="center" justifyContent='space-between'>
             <Typography variant="h5" sx={{ fontWeight: "bold", marginRight: 2 }}>
               {goalName}
             </Typography>
-            <Tooltip
-              title={
-                bankVerification === "verified"
-                  ? "Bank Verified"
-                  : bankVerification === "pending"
-                  ? "Verification Pending"
-                  : "Bank Verification Needed"
-              }
-            >
-              <Box>{getVerificationIcon()}</Box>
-            </Tooltip>
           </Box>
         }
       />

@@ -16,6 +16,7 @@ import {
 import { createGoalAction } from "../actions/goalActions";
 import DecimalValidatedNumberInput from "./TagValidatedTextField";
 import { UserContext } from "../App";
+import { useNavigate } from "react-router-dom";
 
 const priorities = ["Low", "Medium", "High"];
 const tags = [
@@ -41,6 +42,7 @@ const GoalForm = () => {
   const [selectOpen, setSelectOpen] = useState(false);
   const [checked, setChecked] = useState(false)
   const { userData } = useContext(UserContext)
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,6 +65,7 @@ const GoalForm = () => {
         goalTag: [],
         goalPriority: "",
       });
+      navigate('/finance-goals')
     }
   };
 
