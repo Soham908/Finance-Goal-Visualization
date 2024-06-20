@@ -50,9 +50,18 @@ const GoalForm = () => {
   };
 
   const onSubmit = async () => {
+    // if it is checked then i would have to send a reserve funds request to the bank api
+    // create a route for handlind this in the bank api
+    // so keep the goal form, bank veri status to pending till the user accepts in the banlk
+    // now two options, send success res, from bank to this api, or, keep checking till the bank accpets
+    // if keep checking, uncessary calls performed, not the ideal scenario
+    // best would chnage the bank api, add a call to this api
+    // but for that i would need to deploy this api too
+    // test in the local host for now then we will see if it works properly or not
     const data = {
       ...goal,
       username: userData?.username,
+      checked
     };
     const response = await createGoalAction(data);
     console.log(response);

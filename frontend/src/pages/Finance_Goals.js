@@ -24,7 +24,6 @@ const Finance_Goals = ({ sliceNum }) => {
   useEffect(() => {
     const getGoalData = async () => {
       const response = await fetchGoalAction(username);
-      console.log(response);
       setGoalData(response?.goals);
     };
     getGoalData();

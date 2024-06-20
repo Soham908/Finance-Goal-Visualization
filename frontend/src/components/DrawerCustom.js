@@ -32,7 +32,6 @@ const DrawerCustom = () => {
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
   };
-  console.log(userData);
 
   return (
     <>
