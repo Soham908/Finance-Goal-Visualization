@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Card,
   CardContent,
@@ -21,8 +21,11 @@ import {
   CardMedia,
 } from "@mui/material";
 import { CheckCircle, Pending, ErrorOutline, MoreVert, Edit, Delete } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { deleteGoalAction } from "../actions/goalActions";
+import { UserContext } from "../App";
 
-const GoalCard = ({ goal, onEdit, onDelete }) => {
+const GoalCard = ({ goal }) => {
   const {
     goalName,
     goalDescription,
@@ -35,6 +38,9 @@ const GoalCard = ({ goal, onEdit, onDelete }) => {
 
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate()
+  const [deleteGoalName, setDeleteGoalName] = useState(null)
+  const { userData } = useContext(UserContext)
 
   const handleDeleteClick = () => {
     setOpen(true);
@@ -69,6 +75,23 @@ const GoalCard = ({ goal, onEdit, onDelete }) => {
     }
   };
 
+  const onEdit = (goalData) => {
+    const data = {
+      goalData,
+      title: "Update your goal status"
+    }
+    navigate("/goal-form", {state: data})
+  }
+
+  const onDelete = async () => {
+    const data = {
+      goalName: deleteGoalName,
+      username: userData.username
+    }
+    const response = await deleteGoalAction(data)
+    console.log(response);
+  }
+
   const progress = (currentAmount / targetAmount) * 100;
 
   return (
@@ -98,7 +121,7 @@ const GoalCard = ({ goal, onEdit, onDelete }) => {
               <MenuItem onClick={() => onEdit(goal)}>
                 <Edit sx={{ marginRight: 1 }} /> Edit
               </MenuItem>
-              <MenuItem onClick={handleDeleteClick}>
+              <MenuItem onClick={() => {handleDeleteClick(); setDeleteGoalName(goal.goalName)}}>
                 <Delete sx={{ marginRight: 1 }} /> Delete
               </MenuItem>
             </Menu>

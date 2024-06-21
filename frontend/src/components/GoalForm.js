@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -13,10 +13,10 @@ import {
   Typography,
   Checkbox,
 } from "@mui/material";
-import { createGoalAction } from "../actions/goalActions";
+import { createGoalAction, updateGoalAction } from "../actions/goalActions";
 import DecimalValidatedNumberInput from "./TagValidatedTextField";
 import { UserContext } from "../App";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const priorities = ["Low", "Medium", "High"];
 const tags = [
@@ -35,35 +35,42 @@ const GoalForm = () => {
     goalDescription: "",
     targetAmount: "",
     currentAmount: "",
-    goalTag: [],
+    goalTags: [],
     goalPriority: "",
   });
+  const [oldGoalName, setOldGoalName] = useState("")
+  const location = useLocation()
+  useEffect(() => {
+    if(location.state){
+      location.state && setGoal(location.state.goalData)
+      setChecked(location.state.goalData.bankVerification === 'pending' && true)
+      console.log(location.state);
+      setOldGoalName(location.state.goalData.goalName)
+    }
+  }, [])
 
   const [selectOpen, setSelectOpen] = useState(false);
   const [checked, setChecked] = useState(false)
   const { userData } = useContext(UserContext)
   const navigate = useNavigate()
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setGoal({ ...goal, [name]: value });
   };
 
   const onSubmit = async () => {
-    // if it is checked then i would have to send a reserve funds request to the bank api
-    // create a route for handlind this in the bank api
-    // so keep the goal form, bank veri status to pending till the user accepts in the banlk
-    // now two options, send success res, from bank to this api, or, keep checking till the bank accpets
-    // if keep checking, uncessary calls performed, not the ideal scenario
-    // best would chnage the bank api, add a call to this api
-    // but for that i would need to deploy this api too
-    // test in the local host for now then we will see if it works properly or not
+    const bankStatus = checked ? "pending" : "required"
     const data = {
-      ...goal,
+      goal,
       username: userData?.username,
-      checked
+      bankStatus,
+      oldGoalName
     };
-    const response = await createGoalAction(data);
+    var response = ""
+    if(location?.state?.title){
+      response = await updateGoalAction(data)
+      console.log(data);
+    }else response = await createGoalAction(data);
     console.log(response);
     if (response) {
       setGoal({
@@ -71,7 +78,7 @@ const GoalForm = () => {
         goalDescription: "",
         targetAmount: "",
         currentAmount: "",
-        goalTag: [],
+        goalTags: [],
         goalPriority: "",
       });
       navigate('/finance-goals')
@@ -88,7 +95,7 @@ const GoalForm = () => {
     if (value.length <= 2) {
       setGoal({
         ...goal,
-        goalTag: typeof value === "string" ? value.split(",") : value,
+        goalTags: typeof value === "string" ? value.split(",") : value,
       });
     }
     setTimeout(() => {
@@ -99,7 +106,7 @@ const GoalForm = () => {
   return (
     <Grid container display="flex">
       <Grid item xs={12} sx={{ backgroundColor: "wheat", padding: 5, justifyContent: 'center', alignContent: 'center' }}>
-        <Typography variant="h3">Create a New Goal</Typography>
+        <Typography variant="h3">{location?.state?.title ? location.state.title : "Create a New Goal" }</Typography>
         <Typography variant="h5">
           Start achieving your finance dreams today !
         </Typography>
@@ -161,7 +168,7 @@ const GoalForm = () => {
               labelId="goalTag-label"
               id="goalTag"
               multiple
-              value={goal.goalTag}
+              value={goal.goalTags}
               onChange={handleTagChange}
               onClick={() => setSelectOpen(true)}
               open={selectOpen}

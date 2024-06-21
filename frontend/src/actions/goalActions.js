@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_URL;
+const url = process.env.REACT_APP_URL + "/api";
 
 export const createGoalAction = async (data) => {
   try {
-    const newGoal = await axios.post(url + "/api/create-goal", data);
+    const newGoal = await axios.post(url + "/create-goal", data);
     return newGoal.data.newGoal;
   } catch (error) {
     console.log(error);
@@ -14,10 +14,27 @@ export const createGoalAction = async (data) => {
 
 export const fetchGoalAction = async (username) => {
   try {
-    const goalList = await axios.get(url + "/api/get-goals/" + username);
+    const goalList = await axios.get(url + "/get-goals/" + username);
     return goalList.data.goalList;
   } catch (error) {
     console.log(error);
     return {error: "error occured" + error}
   }
 };
+
+export const deleteGoalAction = async (data) => {
+  try {
+    console.log(data);
+    const deleteGoal = await axios.post(url + "/delete-goal", data)
+    return deleteGoal.data
+  } catch (error) {
+    console.log(error);
+    return { success: false }
+  }
+}
+
+export const updateGoalAction = async (data) => {
+  console.log(data);
+  const response = await axios.post(url + "/update-goal", data)
+  return response.data
+}

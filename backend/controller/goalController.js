@@ -4,12 +4,14 @@ const url = process.env.BANK_URL + "/integration/fin-goal/reserve-funds";
 
 exports.createGoal = async (req, res) => {
   var data = req.body;
-  var bankStatus = "required";
   try {
-    if (data.checked) {
-      bankStatus = "pending";
-      data = {...data, requestType: "reserve-funds", appName: 'finance-goals'}
-      axios.post(url, data);
+    if (data.bankStatus === "pending") {
+      axios.post(url, {
+        ...data.goal,
+        requestType: "reserve-funds",
+        appName: "finance-goals",
+        username: data.username
+      });
     }
   } catch (error) {
     console.log(error);
@@ -21,13 +23,8 @@ exports.createGoal = async (req, res) => {
       {
         $push: {
           goals: {
-            goalName: data.goalName,
-            goalDescription: data.goalDescription,
-            targetAmount: data.targetAmount,
-            currentAmount: data.currentAmount,
-            goalTags: data.goalTag,
-            goalPriority: data.goalPriority,
-            bankVerification: bankStatus,
+            ...data.goal,
+            bankVerification: data.bankStatus,
           },
         },
       },
@@ -35,13 +32,29 @@ exports.createGoal = async (req, res) => {
     );
 
     res.json({
-        success: true,
-        newGoal
+      success: true,
+      newGoal,
     });
   } catch (error) {
     console.log(error);
     res.json(error);
   }
+};
+
+exports.updateGoal = async (req, res) => {
+  const updateUserGoal = await userModel.findOne({
+    username: req.body.username,
+  });
+  var goalIndex = updateUserGoal.goals.findIndex(
+    (goal) => goal.goalName === req.body.oldGoalName
+  );
+  req.body.goal = { ...req.body.goal, bankVerification: req.body.bankStatus };
+  updateUserGoal.goals[goalIndex] = req.body.goal;
+  console.log(req.body.goal);
+  await updateUserGoal.save();
+  res.json({
+    success: true,
+  });
 };
 
 exports.fetchGoals = async (req, res) => {
@@ -64,3 +77,19 @@ exports.fetchGoals = async (req, res) => {
 };
 
 exports.fetchGoalById = (req, res) => {};
+
+exports.deleteGoal = async (req, res) => {
+  try {
+    const deletegoal = await userModel.findOne({ username: req.body.username });
+    const goalIndex = deletegoal.goals.findIndex(
+      (goal) => goal.goalName === req.body.goalName
+    );
+    deletegoal.goals.splice(goalIndex, 1);
+
+    await deletegoal.save();
+    res.json({ success: true, message: "Goal deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, error });
+  }
+};
