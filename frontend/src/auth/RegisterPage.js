@@ -36,7 +36,8 @@ const RegisterPage = () => {
       navigate("/");
     }
   }
-
+  // first check if the checkbox was checked, then if the user does exist in the bank db then with
+  // the same credentials make a user in this db, the username and password should be the same for this to work
   const handleSubmit = async () => {
     if(checked){
       const data = {
@@ -47,7 +48,7 @@ const RegisterPage = () => {
       console.log(registerWithBank);
       if(registerWithBank.success){
         register(true)
-      }
+      }else setSnackbarOpen(true); setSnackbarMessage("Use the same login details as Bank App")
     }
     else{
       if (username && password) {
