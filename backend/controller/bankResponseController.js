@@ -9,7 +9,6 @@ exports.reserveFundsResponse = async (req, res) => {
         goal.bankVerification = bankStatus
 
         await reserveFunds.save()
-        console.log(reserveFunds, bankStatus, goalName, username);
         res.json({
             success: true
         })
