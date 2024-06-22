@@ -1,6 +1,9 @@
 const userModel = require("../model/userModel");
 
-exports.registerUser = async (req, res) => {
+
+// the route for this function  => /api/auth/register (post)
+// the data required            => username and password
+exports.registerControllerFunc = async (req, res) => {
   try {
     const checkUser = await userModel.findOne({ username: req.body.username });
     if (checkUser) {
@@ -25,7 +28,9 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-exports.loginUser = async (req, res) => {
+// the route for this function  => /api/auth/login (post)
+// the data required            => username and password
+exports.loginControllerFunc = async (req, res) => {
   try {
     const login = await userModel.findOne({ username: req.body.username });
     if (login) {

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const url = process.env.REACT_APP_URL + "/api/userAuth"
+const url = process.env.REACT_APP_URL + "/api/auth"
 export const userLogin = async (data) => {
     const login = await axios.post(url + "/login", data)
     return login.data

@@ -2,7 +2,9 @@ const userModel = require("../model/userModel");
 const axios = require("axios");
 const url = process.env.BANK_URL + "/integration/fin-goal/reserve-funds";
 
-exports.createGoal = async (req, res) => {
+
+// the route for this function  => /api/goal/create-goal (post)
+exports.createGoalControllerFunc = async (req, res) => {
   var data = req.body;
   try {
     if (data.bankStatus === "pending") {
@@ -41,7 +43,8 @@ exports.createGoal = async (req, res) => {
   }
 };
 
-exports.updateGoal = async (req, res) => {
+// the route for this function  => /api/goal/update-goal (post)
+exports.updateGoalControllerFunc = async (req, res) => {
   const updateUserGoal = await userModel.findOne({
     username: req.body.username,
   });
@@ -57,7 +60,25 @@ exports.updateGoal = async (req, res) => {
   });
 };
 
-exports.fetchGoals = async (req, res) => {
+// the route for this function  => /api/goal/delete-goal (post)
+exports.deleteGoalControllerFunc = async (req, res) => {
+  try {
+    const deletegoal = await userModel.findOne({ username: req.body.username });
+    const goalIndex = deletegoal.goals.findIndex(
+      (goal) => goal.goalName === req.body.goalName
+    );
+    deletegoal.goals.splice(goalIndex, 1);
+
+    await deletegoal.save();
+    res.json({ success: true, message: "Goal deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, error });
+  }
+};
+
+// the route for this function  => /api/goal/fetch-goals (post)
+exports.fetchGoalsControllerFunc = async (req, res) => {
   try {
     const goalList = await userModel.findOne(
       { username: req.params.username },
@@ -76,20 +97,5 @@ exports.fetchGoals = async (req, res) => {
   }
 };
 
+
 exports.fetchGoalById = (req, res) => {};
-
-exports.deleteGoal = async (req, res) => {
-  try {
-    const deletegoal = await userModel.findOne({ username: req.body.username });
-    const goalIndex = deletegoal.goals.findIndex(
-      (goal) => goal.goalName === req.body.goalName
-    );
-    deletegoal.goals.splice(goalIndex, 1);
-
-    await deletegoal.save();
-    res.json({ success: true, message: "Goal deleted successfully" });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, error });
-  }
-};

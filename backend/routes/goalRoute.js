@@ -1,11 +1,14 @@
 const express = require('express')
-const { createGoal, fetchGoals, fetchGoalById, deleteGoal, updateGoal } = require('../controller/goalController')
+const { createGoalControllerFunc, updateGoalControllerFunc, deleteGoalControllerFunc, fetchGoalsControllerFunc, fetchGoalById } = require('../controller/goalController')
 const router = express.Router()
 
-router.post("/create-goal", createGoal)
-router.get("/get-goals/:username", fetchGoals)
+// base path => /api/goal
+
+router.post("/create-goal", createGoalControllerFunc)
+router.post("/update-goal", updateGoalControllerFunc)
+router.post("/delete-goal", deleteGoalControllerFunc)
+
+router.get("/fetch-goals/:username", fetchGoalsControllerFunc)
 router.get("/get-goal/:goalName", fetchGoalById)
-router.post("/delete-goal", deleteGoal)
-router.post("/update-goal", updateGoal)
 
 module.exports = router

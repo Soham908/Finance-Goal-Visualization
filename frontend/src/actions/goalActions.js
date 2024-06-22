@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_URL + "/api";
+const url = process.env.REACT_APP_URL + "/api/goal";
 
 export const createGoalAction = async (data) => {
   try {
@@ -14,7 +14,7 @@ export const createGoalAction = async (data) => {
 
 export const fetchGoalAction = async (username) => {
   try {
-    const goalList = await axios.get(url + "/get-goals/" + username);
+    const goalList = await axios.get(url + "/fetch-goals/" + username);
     return goalList.data.goalList;
   } catch (error) {
     console.log(error);
