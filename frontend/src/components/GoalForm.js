@@ -204,13 +204,36 @@ const GoalForm = () => {
             ))}
           </TextField>
           <Grid>
-          <Typography variant="body">
-            Reserve funds in your bank account
-          </Typography>
-          <Checkbox 
-            onChange={(event) => setChecked(event.target.checked)}
-            checked={checked}
-          />
+          {
+            location?.state?.goalData?.bankVerification === 'verified' || location?.state?.goalData?.bankVerification === 'pending'
+            ? 
+            <>
+              <Typography variant="body">
+                {
+                  location?.state?.goalData?.bankVerification === 'verified' 
+                  ?
+                  "Funds are already reserved and verified"
+                  :
+                  "Bank verification is still pending"
+                }
+              </Typography>
+              <Checkbox 
+                onChange={(event) => setChecked(event.target.checked)}
+                checked
+                disabled
+              />
+            </>
+            :
+            <>
+              <Typography variant="body">
+                Reserve funds in your bank account
+              </Typography>
+              <Checkbox 
+                onChange={(event) => setChecked(event.target.checked)}
+                checked={checked}
+              />
+            </>
+          }
           </Grid>
           <Button
             type="submit"

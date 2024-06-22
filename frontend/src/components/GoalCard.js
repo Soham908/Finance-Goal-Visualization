@@ -39,7 +39,7 @@ const GoalCard = ({ goal }) => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate()
-  const [deleteGoalName, setDeleteGoalName] = useState(null)
+  const [deleteObject, setDeleteObject] = useState(null)
   const { userData } = useContext(UserContext)
 
   const handleDeleteClick = () => {
@@ -76,17 +76,21 @@ const GoalCard = ({ goal }) => {
   };
 
   const onEdit = (goalData) => {
-    const data = {
-      goalData,
-      title: "Update your goal status"
+    if(bankVerification !== 'pending'){
+      const data = {
+        goalData,
+        title: "Update your goal status"
+      }
+      navigate("/goal-form", {state: data})
     }
-    navigate("/goal-form", {state: data})
+
   }
 
   const onDelete = async () => {
     const data = {
-      goalName: deleteGoalName,
-      username: userData.username
+      username: userData.username,
+      goalName: deleteObject.goalName,
+      bankVerification: deleteObject.bankVerification
     }
     const response = await deleteGoalAction(data)
     console.log(response);
@@ -121,7 +125,7 @@ const GoalCard = ({ goal }) => {
               <MenuItem onClick={() => onEdit(goal)}>
                 <Edit sx={{ marginRight: 1 }} /> Edit
               </MenuItem>
-              <MenuItem onClick={() => {handleDeleteClick(); setDeleteGoalName(goal.goalName)}}>
+              <MenuItem onClick={() => {handleDeleteClick(); setDeleteObject({goalName: goal.goalName, bankVerification: goal.bankVerification })}}>
                 <Delete sx={{ marginRight: 1 }} /> Delete
               </MenuItem>
             </Menu>

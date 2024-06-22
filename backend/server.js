@@ -24,6 +24,13 @@ app.use("/api/auth", userRoute)
 app.use("/api/goal", goalRoute)
 app.use("/api/bank", bankResponseRoute)
 
+app.use("/", (req, res) => {
+    res.json({
+        message: "You have reached the backend of the Finance Goal application",
+        anotherMessage: "In some time i will post the API documentation over here, about all the routes"
+    })
+})
+
 app.listen(process.env.PORT, () => {
     console.log("server started");
 })
