@@ -67,9 +67,9 @@ const GoalForm = () => {
       oldGoalName
     };
     var response = ""
+    // if title says update goal then
     if(location?.state?.title){
       response = await updateGoalAction(data)
-      console.log(data);
     }else response = await createGoalAction(data);
     console.log(response);
     if (response) {

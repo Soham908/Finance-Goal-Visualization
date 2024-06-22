@@ -6,44 +6,64 @@ import {
   Button,
   Typography,
   Link,
+  Checkbox,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { userLogin } from "../actions/userAuthAction";
-import { TextFieldStyle } from "../constants/Constants";
-import SlideSnackbar from "../components/SlideSnackbar";
+import { TextFieldStyle } from "../../constants/Constants";
+import SlideSnackbar from "../../components/SlideSnackbar";
+import { userRegisterAction } from "../../actions/authAction";
+import { userRegisterWithBankAPI } from "../../actions/userBankAuthAction";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("Login Failed !");
+  const [snackbarMessage, setSnackbarMessage] = useState(
+    "Please fill all fields !"
+  );
+  const [checked, setChecked] = useState(false)
 
+  const register = async (bankVerified) => {
+    const data = {
+      username,
+      password,
+      bankVerified
+    };
+    const registerHandle = await userRegisterAction(data);
+    if (registerHandle.success) {
+      localStorage.setItem("userCredentialGoal", registerHandle.register.username);
+      navigate("/");
+    }
+  }
+  // first check if the checkbox was checked, then if the user does exist in the bank db then with
+  // the same credentials make a user in this db, the username and password should be the same for this to work
   const handleSubmit = async () => {
-    if (username && password) {
+    if(checked){
       const data = {
         username,
         password,
       };
-      const loginHandle = await userLogin(data);
-      if (loginHandle.success) {
-        localStorage.setItem("userCredentialGoal", loginHandle.login.username);
-        navigate("/");
+      const registerWithBank = await userRegisterWithBankAPI(data)
+      console.log(registerWithBank);
+      if(registerWithBank.success){
+        register(true)
+      }else setSnackbarOpen(true); setSnackbarMessage("Use the same login details as Bank App")
+    }
+    else{
+      if (username && password) {
+        register(false)
       } else {
-        setSnackbarOpen(true);
-        setSnackbarMessage(loginHandle.message);
+        setSnackbarOpen(true)
       }
-    } else {
-      setSnackbarOpen(true);
-      setSnackbarMessage("Please fill all fields");
     }
   };
 
   const handleRedirect = () => {
-    navigate("/register");
+    navigate("/login");
   };
 
-  const handleCloseSnackbar = () => {
+  const handleCloseSnackbar = (event, reason) => {
     setSnackbarOpen(false);
   };
 
@@ -60,7 +80,7 @@ const LoginPage = () => {
         }}
       >
         <Typography variant="h4" gutterBottom>
-          Login
+          Register
         </Typography>
         <TextField
           label="Username"
@@ -99,10 +119,18 @@ const LoginPage = () => {
           sx={{ mt: 2 }}
           onClick={handleSubmit}
         >
-          Login
+          Register
         </Button>
         <Typography variant="h6" sx={{ margin: "5%" }}>
-          Dont have an account ? <Link onClick={handleRedirect}>Register</Link>
+          Have an account on our Banking App ?
+          <Checkbox 
+            onChange={(event) => setChecked(event.target.checked)}
+            checked={checked}
+            sx={{ backgroundColor: 'white' }}
+          />
+        </Typography>
+        <Typography variant="h6" >
+          Already have an account ? <Link onClick={handleRedirect}>Login</Link>
         </Typography>
       </Box>
 
@@ -110,10 +138,9 @@ const LoginPage = () => {
         open={snackbarOpen}
         message={snackbarMessage}
         handleClose={handleCloseSnackbar}
-        autoHideDuration={2500}
       />
     </Container>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

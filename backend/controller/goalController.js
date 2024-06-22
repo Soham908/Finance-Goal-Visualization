@@ -1,24 +1,12 @@
 const userModel = require("../model/userModel");
 const axios = require("axios");
-const url = process.env.BANK_URL + "/integration/fin-goal/reserve-funds";
+const bankBackendURL = process.env.BANK_URL + "/api/integrate-app/finance-goal-app/reserve-funds-request";
 
 
 // the route for this function  => /api/goal/create-goal (post)
 exports.createGoalControllerFunc = async (req, res) => {
   var data = req.body;
-  try {
-    if (data.bankStatus === "pending") {
-      axios.post(url, {
-        ...data.goal,
-        requestType: "reserve-funds",
-        appName: "finance-goals",
-        username: data.username
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
+  console.log(data);
   try {
     const newGoal = await userModel.findOneAndUpdate(
       { username: req.body.username },
@@ -39,25 +27,51 @@ exports.createGoalControllerFunc = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.json(error);
+    res.json({
+      success: false,
+      error
+    });
+  }
+
+  // if the checkbox is true when submitting the goal form, then send a request to the bank and wait for approval
+  if(data.bankStatus === 'pending'){
+    try {
+      const bankResponse = await axios.post(bankBackendURL, {
+        goalName: data.goal.goalName,
+        goalReserveAmount: data.goal.currentAmount,
+        goalBankVerificationStatus: data.bankStatus,
+        requestType: "reserve-funds",
+        applicationName: "finance-goals",
+        username: data.username
+      })
+      console.log("the bankResponse is: ", bankResponse.data);
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 
 // the route for this function  => /api/goal/update-goal (post)
 exports.updateGoalControllerFunc = async (req, res) => {
-  const updateUserGoal = await userModel.findOne({
-    username: req.body.username,
-  });
-  var goalIndex = updateUserGoal.goals.findIndex(
-    (goal) => goal.goalName === req.body.oldGoalName
-  );
-  req.body.goal = { ...req.body.goal, bankVerification: req.body.bankStatus };
-  updateUserGoal.goals[goalIndex] = req.body.goal;
-  console.log(req.body.goal);
-  await updateUserGoal.save();
-  res.json({
-    success: true,
-  });
+  try {
+    const updatedGoal = await userModel.findOne({
+      username: req.body.username,
+    });
+    var goalIndex = updatedGoal.goals.findIndex(
+      (goal) => goal.goalName === req.body.oldGoalName
+    );
+    req.body.goal = { ...req.body.goal, bankVerification: req.body.bankStatus };
+    updatedGoal.goals[goalIndex] = req.body.goal;
+    console.log(req.body.goal);
+    await updatedGoal.save();
+    res.json({
+      success: true,
+      updatedGoal
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
 };
 
 // the route for this function  => /api/goal/delete-goal (post)

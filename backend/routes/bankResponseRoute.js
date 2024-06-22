@@ -1,7 +1,9 @@
 const express = require('express')
-const { reserveFundsResponse } = require('../controller/bankResponseController')
+const { reserveFundsResponseFromBankControllerFunc } = require('../controller/bankResponseController')
 const router = express.Router()
 
-router.post("/reserve-fund-response", reserveFundsResponse)
+// base path => /api/bank
+
+router.post("/reserve-fund-response", reserveFundsResponseFromBankControllerFunc)
 
 module.exports = router

@@ -5,8 +5,8 @@ import { Route, Routes } from "react-router-dom";
 import Finance_Goals from "./pages/Finance_Goals";
 import Homepage from "./pages/Homepage";
 import Articles from "./pages/Articles";
-import LoginPage from "./auth/LoginPage";
-import RegisterPage from "./auth/RegisterPage";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 import { createContext, useEffect, useState } from "react";
 
 export const UserContext = createContext();
