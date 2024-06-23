@@ -5,7 +5,7 @@ import { Grid, IconButton, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-const Finance_Goals = ({ sliceNum }) => {
+const FinanceGoals = ({ sliceNum }) => {
   const [goalData, setGoalData] = useState([
     {
       goalName: "",
@@ -32,10 +32,11 @@ const Finance_Goals = ({ sliceNum }) => {
 
   return (
     <>
-      <Grid container display="flex">
+      <Grid container display="flex" >
+        <Grid container item sx={{ height: { xs: '8%', sm: '15%', md: '17%' } }}>
         {
           !sliceNum &&
-          <Grid container item paddingTop={6} paddingLeft={6} display='flex' direction='column' >
+          <Grid container item paddingTop={6} paddingLeft={6} display='flex' direction='column' sx={{ backgroundColor: 'wheat', width: '100%' }} >
             <Grid item >
             <Typography variant="h4" fontWeight='bold'>
               These are your goals
@@ -51,7 +52,9 @@ const Finance_Goals = ({ sliceNum }) => {
             </Grid>
           </Grid>
         }
-        <Grid container item padding={2}>
+        </Grid>
+        <Grid container item>
+        <Grid container item padding={2} >
           {goalData?.slice(0, slice).map((value, index) => {
             return (
               <Grid item key={index} margin={1}
@@ -62,9 +65,10 @@ const Finance_Goals = ({ sliceNum }) => {
             );
           })}
         </Grid>
+        </Grid>
       </Grid>
     </>
   );
 };
 
-export default Finance_Goals;
+export default FinanceGoals;

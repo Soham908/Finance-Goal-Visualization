@@ -56,7 +56,8 @@ const LoginPage = () => {
           flexDirection: "column",
           alignItems: "center",
           color: "white",
-          backgroundColor: 'black'
+          backgroundColor: 'black',
+          height: "100vh",
         }}
       >
         <Typography variant="h4" gutterBottom>

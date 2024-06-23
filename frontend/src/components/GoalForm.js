@@ -104,7 +104,7 @@ const GoalForm = () => {
   };
 
   return (
-    <Grid container display="flex">
+    <Grid container display="flex" backgroundColor="white">
       <Grid item xs={12} sx={{ backgroundColor: "wheat", padding: 5, justifyContent: 'center', alignContent: 'center' }}>
         <Typography variant="h3">{location?.state?.title ? location.state.title : "Create a New Goal" }</Typography>
         <Typography variant="h5">

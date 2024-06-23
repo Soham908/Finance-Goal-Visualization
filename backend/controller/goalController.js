@@ -3,7 +3,6 @@ const axios = require("axios");
 const bankBackendURL = process.env.BANK_URL + "/api/integrate-app/finance-goal-app";
 
 async function sendReserveFundRequestToBank(data){
-  if(data.bankStatus === 'pending'){
     try {
       const bankResponse = await axios.post(bankBackendURL + "/reserve-funds-request", {
         goalName: data.goal.goalName,
@@ -17,7 +16,6 @@ async function sendReserveFundRequestToBank(data){
     } catch (error) {
       console.log(error);
     }
-  }
 }
 
 // the route for this function  => /api/goal/create-goal (post)
@@ -51,7 +49,9 @@ exports.createGoalControllerFunc = async (req, res) => {
   }
 
   // if the checkbox is true when submitting the goal form, then send a request to the bank and wait for approval
+  if(data.bankStatus === 'pending'){
   sendReserveFundRequestToBank(data)
+  }
 };
 
 // the route for this function  => /api/goal/update-goal (post)

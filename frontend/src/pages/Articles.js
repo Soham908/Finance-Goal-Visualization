@@ -19,11 +19,11 @@ const Articles = ({ category }) => {
   return (
     <Grid container display="flex">
       {!category && (
-        <Grid item paddingTop={6} paddingLeft={6} sx={{ backgroundColor: 'green' }}>
-          <Typography variant="h4" gutterBottom>
+        <Grid item paddingTop={6} paddingLeft={6} sx={{ backgroundColor: 'wheat', width: '100%' }}>
+          <Typography variant="h4" color="black" fontWeight='bold' gutterBottom>
             Related Articles
           </Typography>
-          <Typography variant="body1" color="textSecondary" paragraph>
+          <Typography variant="body1" color="black" paragraph>
             Learn more about savings, investment, vacation planning, home
             buying, and car ownership.
           </Typography>

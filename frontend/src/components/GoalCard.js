@@ -99,7 +99,13 @@ const GoalCard = ({ goal }) => {
   const progress = (currentAmount / targetAmount) * 100;
 
   return (
-    <Card elevation={5} sx={{ height: '100%', width: '100%', display: "flex", flexDirection: "column", justifyContent: "space-evenly", marginBottom: 2, borderRadius: 8, padding: 1 }}>
+    <Card elevation={5} 
+      sx={{ height: '100%', width: '100%', display: "flex", flexDirection: "column", justifyContent: "space-evenly", 
+          marginBottom: 2, borderRadius: 8, padding: 1 ,
+          border: "1px solid #ddd",
+          backgroundColor: "#050505",
+          borderColor: "#ffaaff",
+          }}>
       <CardHeader
         action={
           <Box display='flex' alignItems='center'>
@@ -133,19 +139,19 @@ const GoalCard = ({ goal }) => {
         }
         title={
           <Box display="flex" alignItems="center" justifyContent='space-between'>
-            <Typography variant="h5" sx={{ fontWeight: "bold", marginRight: 2 }}>
+            <Typography variant="h5" sx={{ fontWeight: "bold", marginRight: 2, color: 'white' }}>
               {goalName}
             </Typography>
           </Box>
         }
       />
       <CardContent>
-        <Typography variant="body2" color="text.secondary" gutterBottom>
+        <Typography variant="body2" color="white" gutterBottom>
           {goalDescription}
         </Typography>
         <Box sx={{ marginBottom: 2 }}>
           <LinearProgress variant="determinate" value={progress} />
-          <Typography variant="body2" color="text.secondary" align="center">
+          <Typography variant="body2" color="white" align="center">
             {progress.toFixed(2)}% funded
           </Typography>
         </Box>
