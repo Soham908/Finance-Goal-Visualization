@@ -85,7 +85,13 @@ const GoalCard = ({ goal }) => {
         title: "Update your goal status"
       }
       navigate("/goal-form", {state: data})
-    } else setSnackbarOpen(true); setSnackbarMessage("Bank Status pending, cannot edit right now")
+    } else if (bankVerification === 'verified') {
+      setSnackbarOpen(true); 
+      setSnackbarMessage("Bank Status pending, cannot edit right now");
+    } else {
+      setSnackbarOpen(true); 
+      setSnackbarMessage("Bank Status pending, cannot edit right now");
+    }
   }
 
   const onDelete = async () => {
@@ -94,8 +100,8 @@ const GoalCard = ({ goal }) => {
       goalName: deleteObject.goalName,
       bankVerification: deleteObject.bankVerification
     }
-    const response = await deleteGoalAction(data)
-    console.log(response);
+    await deleteGoalAction(data)
+    navigate('/finance-goals')
   }
 
   const progress = (currentAmount / targetAmount) * 100;

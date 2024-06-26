@@ -63,14 +63,16 @@ const GoalForm = () => {
   };
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [disableButton, setDisableButton] = useState(false)
 
   const onSubmit = async () => {
+    setDisableButton(true)
     if (parseFloat(goal.targetAmount) <= parseFloat(goal.currentAmount)) {
       setSnackbarOpen(true);
       setSnackbarMessage(
         "Current amount cannot be greater than equal to the target amount"
       );
-      console.log(typeof goal.targetAmount,typeof goal.currentAmount);
+      setDisableButton(false)
       return;
     }
     const bankStatus = checked ? "pending" : "required";
@@ -97,6 +99,7 @@ const GoalForm = () => {
       });
       navigate("/finance-goals");
     }
+    setDisableButton(false)
   };
 
   const handleSubmit = (e) => {
@@ -248,6 +251,7 @@ const GoalForm = () => {
                   onChange={(event) => setChecked(event.target.checked)}
                   checked
                   disabled
+                  sx={CheckboxStyled}
                 />
               </>
             ) : (
@@ -267,6 +271,7 @@ const GoalForm = () => {
             type="submit"
             variant="contained"
             color="primary"
+            disabled={disableButton}
             sx={{ width: "10%", fontSize: "80%", borderRadius: 2 }}
           >
             Submit

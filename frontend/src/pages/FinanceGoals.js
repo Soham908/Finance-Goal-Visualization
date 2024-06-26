@@ -4,6 +4,7 @@ import GoalCard from "../components/GoalCard";
 import { Grid, IconButton, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import GoalCardSkeleton from "../components/GoalCardSkeleton";
 
 const FinanceGoals = ({ sliceNum }) => {
   const [goalData, setGoalData] = useState([
@@ -18,6 +19,7 @@ const FinanceGoals = ({ sliceNum }) => {
   ]);
   const username = localStorage.getItem("userCredentialGoal");
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(true)
 
   var slice = sliceNum || goalData?.length;
 
@@ -25,6 +27,7 @@ const FinanceGoals = ({ sliceNum }) => {
     const getGoalData = async () => {
       const response = await fetchGoalAction(username);
       setGoalData(response?.goals);
+      setLoading(false)
     };
     getGoalData();
     slice = goalData.length;
@@ -55,9 +58,18 @@ const FinanceGoals = ({ sliceNum }) => {
         </Grid>
         <Grid container item>
         <Grid container item padding={2} >
-          {
-            goalData[0]?.goalName &&
-              goalData?.slice(0, slice).map((value, index) => {
+        {loading && username ? (
+              // Render skeletons while loading
+              Array.from(new Array(3)).map((_, index) => (
+                <Grid item key={index} margin={1}
+                  sx={{ width: { xs: "90%", sm: "45%", md: "30%" } }}
+                >
+                  <GoalCardSkeleton />
+                </Grid>
+              ))
+            ) : (
+              goalData && goalData[0]?.goalName &&
+              goalData?.slice(0, slice)?.map((value, index) => {
                 return (
                   <Grid item key={index} margin={1}
                     sx={{ width: { xs: "90%", sm: "45%", md: "30%" } }}
@@ -66,6 +78,7 @@ const FinanceGoals = ({ sliceNum }) => {
                   </Grid>
                 );
               })
+            )
           }
         </Grid>
         </Grid>

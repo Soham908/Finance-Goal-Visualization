@@ -20,6 +20,7 @@ import SavingsIcon from '@mui/icons-material/Savings';
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
+import { Logout } from "@mui/icons-material";
 
 const DrawerCustom = () => {
 
@@ -71,6 +72,11 @@ const DrawerCustom = () => {
             { text: "Finance Goals", icon: <SavingsIcon />, onClick: () => {navigate("/finance-goals"); toggleDrawer(); }},
             { text: "Articles", icon: <ArticleIcon />, onClick: () => {navigate("/articles"); toggleDrawer(); }},
             { text: "Login", icon: <LoginIcon />, onClick: () => {navigate("/login"); toggleDrawer(); }},
+            { text: "Logout", icon: <Logout />, onClick: () => {
+              localStorage.removeItem('userCredentialGoal')
+              toggleDrawer();
+              navigate("/"); 
+            }},
           ].map((item, index) => (
           <ListItemButton
             key={item.text}
