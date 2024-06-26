@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextField } from '@mui/material';
+import { TextFieldStyle } from '../constants/Constants';
 
 const DecimalValidatedNumberInput = ({ id, label, value, onChange, ...props }) => {
   const [error, setError] = useState(false);
@@ -33,10 +34,13 @@ const DecimalValidatedNumberInput = ({ id, label, value, onChange, ...props }) =
       value={value}
       onChange={handleChange}
       error={error}
+      type='number'
       helperText={helperText}
       inputProps={{ min: 0 }}
       {...props}
-      sx={{ width: '100%' }}
+      sx={ TextFieldStyle }
+      fullWidth
+      autoComplete='off'
     />
   );
 };

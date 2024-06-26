@@ -24,6 +24,7 @@ import { CheckCircle, Pending, ErrorOutline, MoreVert, Edit, Delete } from "@mui
 import { useNavigate } from "react-router-dom";
 import { deleteGoalAction } from "../actions/goalActions";
 import { UserContext } from "../App";
+import SlideSnackbar from "./SlideSnackbar";
 
 const GoalCard = ({ goal }) => {
   const {
@@ -41,6 +42,8 @@ const GoalCard = ({ goal }) => {
   const navigate = useNavigate()
   const [deleteObject, setDeleteObject] = useState(null)
   const { userData } = useContext(UserContext)
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleDeleteClick = () => {
     setOpen(true);
@@ -82,8 +85,7 @@ const GoalCard = ({ goal }) => {
         title: "Update your goal status"
       }
       navigate("/goal-form", {state: data})
-    }
-
+    } else setSnackbarOpen(true); setSnackbarMessage("Bank Status pending, cannot edit right now")
   }
 
   const onDelete = async () => {
@@ -97,6 +99,10 @@ const GoalCard = ({ goal }) => {
   }
 
   const progress = (currentAmount / targetAmount) * 100;
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   return (
     <Card elevation={5} 
@@ -121,7 +127,7 @@ const GoalCard = ({ goal }) => {
               <Box marginTop={0.6}> {getVerificationIcon()} </Box>
             </Tooltip>
             <IconButton aria-label="settings" onClick={handleMenuClick}>
-              <MoreVert />
+              <MoreVert sx={{ color: 'white' }}/>
             </IconButton>
             <Menu
               anchorEl={anchorEl}
@@ -178,6 +184,12 @@ const GoalCard = ({ goal }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <SlideSnackbar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        handleClose={handleCloseSnackbar}
+        autoHideDuration={2500}
+      />
     </Card>
   );
 };

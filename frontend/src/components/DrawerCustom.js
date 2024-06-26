@@ -37,7 +37,7 @@ const DrawerCustom = () => {
     <>
      {isSmallScreen ? (
         <IconButton onClick={toggleDrawer} sx={{ color: 'black', position: 'fixed', top: 10, left: 10 }}>
-          <MenuIcon />
+          <MenuIcon sx={{ color: 'blue' }} />
         </IconButton>
       ) : null}
     <Drawer

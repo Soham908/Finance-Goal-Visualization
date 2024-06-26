@@ -9,7 +9,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { TextFieldStyle } from "../../constants/Constants";
+import { CheckboxStyled, TextFieldStyle } from "../../constants/Constants";
 import SlideSnackbar from "../../components/SlideSnackbar";
 import { userRegisterAction } from "../../actions/authAction";
 import { userRegisterWithBankAPI } from "../../actions/userBankAuthAction";
@@ -127,7 +127,7 @@ const RegisterPage = () => {
           <Checkbox 
             onChange={(event) => setChecked(event.target.checked)}
             checked={checked}
-            sx={{ backgroundColor: 'white' }}
+            sx={ CheckboxStyled }
           />
         </Typography>
         <Typography variant="h6" >

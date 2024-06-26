@@ -1,20 +1,8 @@
-import React, { useState, useEffect } from "react";
 import { Grid, Typography, Box } from "@mui/material";
-import articlesData from "./articles.json"; 
+import articlesData from "../data/articles.json"; 
 import ArticleCard from "../components/ArticleCard";
 
 const Articles = ({ category }) => {
-  const [articles, setArticles] = useState([]);
-  var slice = category || articles?.length;
-
-  useEffect(() => {
-    if (category)
-      setArticles(
-        articlesData.savings
-      );
-    else setArticles(articlesData.savings);
-    slice = articles?.length;
-  }, []);
 
   return (
     <Grid container display="flex">

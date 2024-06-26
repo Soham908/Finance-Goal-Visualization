@@ -33,7 +33,7 @@ const FinanceGoals = ({ sliceNum }) => {
   return (
     <>
       <Grid container display="flex" >
-        <Grid container item sx={{ height: { xs: '8%', sm: '15%', md: '17%' } }}>
+        <Grid container item sx={{ height: { xs: '8%', sm: '15%', md: '17%' }, marginBottom: 6 }}>
         {
           !sliceNum &&
           <Grid container item paddingTop={6} paddingLeft={6} display='flex' direction='column' sx={{ backgroundColor: 'wheat', width: '100%' }} >
@@ -55,15 +55,18 @@ const FinanceGoals = ({ sliceNum }) => {
         </Grid>
         <Grid container item>
         <Grid container item padding={2} >
-          {goalData?.slice(0, slice).map((value, index) => {
-            return (
-              <Grid item key={index} margin={1}
-                sx={{ width: { xs: "90%", sm: "45%", md: "30%" } }}
-              >
-                <GoalCard goal={value} />
-              </Grid>
-            );
-          })}
+          {
+            goalData[0]?.goalName &&
+              goalData?.slice(0, slice).map((value, index) => {
+                return (
+                  <Grid item key={index} margin={1}
+                    sx={{ width: { xs: "90%", sm: "45%", md: "30%" } }}
+                  >
+                    <GoalCard goal={value} />
+                  </Grid>
+                );
+              })
+          }
         </Grid>
         </Grid>
       </Grid>

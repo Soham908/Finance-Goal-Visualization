@@ -17,6 +17,8 @@ import { createGoalAction, updateGoalAction } from "../actions/goalActions";
 import DecimalValidatedNumberInput from "./TagValidatedTextField";
 import { UserContext } from "../App";
 import { useLocation, useNavigate } from "react-router-dom";
+import { CheckboxStyled, FormControlStyle, TextFieldSelectStyle, TextFieldStyle } from "../constants/Constants";
+import SlideSnackbar from "./SlideSnackbar";
 
 const priorities = ["Low", "Medium", "High"];
 const tags = [
@@ -38,39 +40,51 @@ const GoalForm = () => {
     goalTags: [],
     goalPriority: "",
   });
-  const [oldGoalName, setOldGoalName] = useState("")
-  const location = useLocation()
+  const [oldGoalName, setOldGoalName] = useState("");
+  const location = useLocation();
   useEffect(() => {
-    if(location.state){
-      location.state && setGoal(location.state.goalData)
-      setChecked(location.state.goalData.bankVerification === 'pending' && true)
+    if (location.state) {
+      location.state && setGoal(location.state.goalData);
+      setChecked(
+        location.state.goalData.bankVerification === "pending" && true
+      );
       console.log(location.state);
-      setOldGoalName(location.state.goalData.goalName)
+      setOldGoalName(location.state.goalData.goalName);
     }
-  }, [])
+  }, []);
 
   const [selectOpen, setSelectOpen] = useState(false);
-  const [checked, setChecked] = useState(false)
-  const { userData } = useContext(UserContext)
-  const navigate = useNavigate()
+  const [checked, setChecked] = useState(false);
+  const { userData } = useContext(UserContext);
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setGoal({ ...goal, [name]: value });
   };
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const onSubmit = async () => {
-    const bankStatus = checked ? "pending" : "required"
+    if (parseFloat(goal.targetAmount) <= parseFloat(goal.currentAmount)) {
+      setSnackbarOpen(true);
+      setSnackbarMessage(
+        "Current amount cannot be greater than equal to the target amount"
+      );
+      console.log(typeof goal.targetAmount,typeof goal.currentAmount);
+      return;
+    }
+    const bankStatus = checked ? "pending" : "required";
     const data = {
       goal,
       username: userData?.username,
       bankStatus,
-      oldGoalName
+      oldGoalName,
     };
-    var response = ""
+    var response = "";
     // if title says update goal then
-    if(location?.state?.title){
-      response = await updateGoalAction(data)
-    }else response = await createGoalAction(data);
+    if (location?.state?.title) {
+      response = await updateGoalAction(data);
+    } else response = await createGoalAction(data);
     console.log(response);
     if (response) {
       setGoal({
@@ -81,7 +95,7 @@ const GoalForm = () => {
         goalTags: [],
         goalPriority: "",
       });
-      navigate('/finance-goals')
+      navigate("/finance-goals");
     }
   };
 
@@ -103,10 +117,25 @@ const GoalForm = () => {
     }, 10);
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   return (
-    <Grid container display="flex" backgroundColor="white">
-      <Grid item xs={12} sx={{ backgroundColor: "wheat", padding: 5, justifyContent: 'center', alignContent: 'center' }}>
-        <Typography variant="h3">{location?.state?.title ? location.state.title : "Create a New Goal" }</Typography>
+    <Grid container display="flex" backgroundColor="#050505">
+      <Grid
+        item
+        xs={12}
+        sx={{
+          backgroundColor: "wheat",
+          padding: 5,
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
+        <Typography variant="h3">
+          {location?.state?.title ? location.state.title : "Create a New Goal"}
+        </Typography>
         <Typography variant="h5">
           Start achieving your finance dreams today !
         </Typography>
@@ -130,6 +159,7 @@ const GoalForm = () => {
             required
             autoCapitalize="true"
             autoComplete="off"
+            sx={TextFieldStyle}
           />
           <TextField
             label="Goal Description"
@@ -140,6 +170,7 @@ const GoalForm = () => {
             inputProps={{ maxLength: 80 }}
             autoComplete="off"
             required
+            sx={TextFieldStyle}
           />
           <Grid container sx={{ justifyContent: "center" }} spacing={3}>
             <Grid item xs={6} md={6}>
@@ -162,7 +193,7 @@ const GoalForm = () => {
             </Grid>
           </Grid>
 
-          <FormControl>
+          <FormControl sx={FormControlStyle}>
             <InputLabel id="goalTag-label">Goal Tags</InputLabel>
             <Select
               labelId="goalTag-label"
@@ -196,6 +227,7 @@ const GoalForm = () => {
             value={goal.goalPriority}
             onChange={handleChange}
             required
+            sx={TextFieldSelectStyle}
           >
             {priorities.map((option) => (
               <MenuItem key={option} value={option}>
@@ -204,36 +236,32 @@ const GoalForm = () => {
             ))}
           </TextField>
           <Grid>
-          {
-            location?.state?.goalData?.bankVerification === 'verified' || location?.state?.goalData?.bankVerification === 'pending'
-            ? 
-            <>
-              <Typography variant="body">
-                {
-                  location?.state?.goalData?.bankVerification === 'verified' 
-                  ?
-                  "Funds are already reserved and verified"
-                  :
-                  "Bank verification is still pending"
-                }
-              </Typography>
-              <Checkbox 
-                onChange={(event) => setChecked(event.target.checked)}
-                checked
-                disabled
-              />
-            </>
-            :
-            <>
-              <Typography variant="body">
-                Reserve funds in your bank account
-              </Typography>
-              <Checkbox 
-                onChange={(event) => setChecked(event.target.checked)}
-                checked={checked}
-              />
-            </>
-          }
+            {location?.state?.goalData?.bankVerification === "verified" ||
+            location?.state?.goalData?.bankVerification === "pending" ? (
+              <>
+                <Typography variant="body" color="white">
+                  {location?.state?.goalData?.bankVerification === "verified"
+                    ? "Funds are already reserved and verified"
+                    : "Bank verification is still pending"}
+                </Typography>
+                <Checkbox
+                  onChange={(event) => setChecked(event.target.checked)}
+                  checked
+                  disabled
+                />
+              </>
+            ) : (
+              <>
+                <Typography variant="body" color="white">
+                  Reserve funds in your bank account
+                </Typography>
+                <Checkbox
+                  onChange={(event) => setChecked(event.target.checked)}
+                  checked={checked}
+                  sx={CheckboxStyled}
+                />
+              </>
+            )}
           </Grid>
           <Button
             type="submit"
@@ -245,6 +273,12 @@ const GoalForm = () => {
           </Button>
         </Box>
       </Grid>
+      <SlideSnackbar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        handleClose={handleCloseSnackbar}
+        autoHideDuration={3000}
+      />
     </Grid>
   );
 };
