@@ -42,11 +42,13 @@ const GoalForm = () => {
   });
   const [oldGoalName, setOldGoalName] = useState("");
   const location = useLocation();
+  const [oldReserveAmount, setOldReserveAmount] = useState(0)
   useEffect(() => {
     if (location.state) {
       location.state && setGoal(location.state.goalData);
+      setOldReserveAmount(location?.state?.goalData?.currentAmount)
       setChecked(
-        location.state.goalData.bankVerification === "pending" && true
+        location.state.goalData.bankVerification === "verified" && true
       );
       console.log(location.state);
       setOldGoalName(location.state.goalData.goalName);
@@ -74,18 +76,32 @@ const GoalForm = () => {
       );
       setDisableButton(false)
       return;
+    }else if ( parseFloat(goal.currentAmount) < parseFloat(oldReserveAmount) ){
+      setSnackbarOpen(true);
+      setSnackbarMessage(
+        "Current amount cannot be less than previously reserved amount"
+      );
+      setDisableButton(false)
+      return
     }
-    const bankStatus = checked ? "pending" : "required";
+    const bankStatus = checked ? "verified" : "required";
     const data = {
       goal,
       username: userData?.username,
       bankStatus,
       oldGoalName,
+      amountToUpdate: goal.currentAmount - oldReserveAmount
     };
     var response = "";
     // if title says update goal then
     if (location?.state?.title) {
       response = await updateGoalAction(data);
+      if (!response.success){
+        setSnackbarOpen(true)
+        setSnackbarMessage(response.message)
+        setDisableButton(false)
+        return
+      }
     } else response = await createGoalAction(data);
     console.log(response);
     if (response) {

@@ -1,21 +1,45 @@
 const userModel = require("../model/userModel");
 const axios = require("axios");
-const bankBackendURL = process.env.BANK_URL + "/api/integrate-app/finance-goal-app";
+const bankBackendURL =
+  process.env.BANK_URL + "/api/integrate-app/finance-goal-app";
 
-async function sendReserveFundRequestToBank(data){
-    try {
-      const bankResponse = await axios.post(bankBackendURL + "/reserve-funds-request", {
+async function sendReserveFundRequestToBank(data) {
+  try {
+    const bankResponse = await axios.post(
+      bankBackendURL + "/reserve-funds-request",
+      {
         goalName: data.goal.goalName,
         goalReserveAmount: data.goal.currentAmount,
         goalBankVerificationStatus: data.bankStatus,
         requestType: "reserve-funds",
         applicationName: "finance-goals",
-        username: data.username
-      })
-      console.log("the bankResponse is: ", bankResponse.data);
-    } catch (error) {
-      console.log(error);
-    }
+        username: data.username,
+      }
+    );
+    console.log("the bankResponse is: ", bankResponse.data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function sendUpdateReserveFundRequestToBank(data) {
+  try {
+    const bankResponse = await axios.post(
+      bankBackendURL + "/reserve-funds-amount-updated",
+      {
+        goalName: data.goal.goalName,
+        goalMoreReserveAmount: parseFloat(data.amountToUpdate),
+        goalBankVerificationStatus: data.bankStatus,
+        requestType: "more funds reserved",
+        applicationName: "finance-goals",
+        username: data.username,
+      }
+    );
+    console.log("update goal from bank : ", bankResponse.data);
+    return bankResponse.data;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 // the route for this function  => /api/goal/create-goal (post)
@@ -44,21 +68,21 @@ exports.createGoalControllerFunc = async (req, res) => {
     console.log(error);
     res.json({
       success: false,
-      error
+      error,
     });
   }
 
   // if the checkbox is true when submitting the goal form, then send a request to the bank and wait for approval
-  if(data.bankStatus === 'pending'){
-  sendReserveFundRequestToBank(data)
+  if (data.bankStatus === "pending") {
+    sendReserveFundRequestToBank(data);
   }
 };
 
 // the route for this function  => /api/goal/update-goal (post)
 exports.updateGoalControllerFunc = async (req, res) => {
-  
   try {
-    const data = req.body
+    const data = req.body;
+    console.log(data.amountToUpdate);
     const updatedGoal = await userModel.findOne({
       username: data.username,
     });
@@ -68,26 +92,34 @@ exports.updateGoalControllerFunc = async (req, res) => {
     data.goal = { ...data.goal, bankVerification: data.bankStatus };
     updatedGoal.goals[goalIndex] = data.goal;
     console.log(data.goal);
-    if(data.bankStatus === 'pending')
-      await sendReserveFundRequestToBank(data)
-    await updatedGoal.save();
-    res.json({
-      success: true,
-      updatedGoal
-    });
+    if (data.bankStatus === "verified" && data.amountToUpdate > 0) {
+      const bankResponse = await sendUpdateReserveFundRequestToBank(data);
+      if (bankResponse.success) {
+        await updatedGoal.save();
+        res.json({
+          success: true,
+          updatedGoal,
+        });
+      } else res.json({ success: false, message: bankResponse.message });
+    } else {
+      await updatedGoal.save();
+      res.json({
+        success: true,
+        message: "goal details updated, bank request not needed to be sent",
+      });
+    }
   } catch (error) {
     console.log(error);
   }
 
   // only need to call the bank notification stuff first if the bankVerification is pending, or verified
-  // if the user changes the goalName, update the currentAmount, 
-
+  // if the user changes the goalName, update the currentAmount,
 };
 
 // the route for this function  => /api/goal/delete-goal (post)
 // data coming in => { username, goalName, bankVerification }
 exports.deleteGoalControllerFunc = async (req, res) => {
-  const data = req.body
+  const data = req.body;
   try {
     const deletegoal = await userModel.findOne({ username: data.username });
     const goalIndex = deletegoal.goals.findIndex(
@@ -104,17 +136,23 @@ exports.deleteGoalControllerFunc = async (req, res) => {
 
   // i have to release the reserved funds once the goal is deleted right
   // how to apporach it, already deleting the goal func is done, now just need to make a call to the bank backend
-  // and handle it there, send the goalname and username and tell it to release the funds, 
+  // and handle it there, send the goalname and username and tell it to release the funds,
   // no need to delete the notification, just find the notification and then have the status show goal deleted
-  // and send the amount that was reserved, or just take the amount that is present in that database 
+  // and send the amount that was reserved, or just take the amount that is present in that database
   // obj.reservedFunds - noti.notiAmount, boom
-  
-  if ( data.bankVerification === 'verified' || data.bankVerification === 'pending' ){
+
+  if (
+    data.bankVerification === "verified" ||
+    data.bankVerification === "pending"
+  ) {
     try {
-      const bankResponse = await axios.post(bankBackendURL + "/release-funds-request", {
-        username: data.username,
-        goalName: data.goalName
-      })
+      const bankResponse = await axios.post(
+        bankBackendURL + "/release-funds-request",
+        {
+          username: data.username,
+          goalName: data.goalName,
+        }
+      );
       console.log(bankResponse);
     } catch (error) {
       console.log(error);
@@ -141,6 +179,5 @@ exports.fetchGoalsControllerFunc = async (req, res) => {
     });
   }
 };
-
 
 exports.fetchGoalById = (req, res) => {};

@@ -95,6 +95,11 @@ const GoalCard = ({ goal }) => {
   }
 
   const onDelete = async () => {
+    if(bankVerification === 'pending'){
+      setSnackbarOpen(true); 
+      setSnackbarMessage("Bank Status pending, cannot delete right now");
+      return 
+    }
     const data = {
       username: userData.username,
       goalName: deleteObject.goalName,
