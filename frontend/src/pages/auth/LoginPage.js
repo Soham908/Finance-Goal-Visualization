@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { TextFieldStyle } from "../../constants/Constants";
 import SlideSnackbar from "../../components/SlideSnackbar";
 import { userLoginAction } from "../../actions/authAction";
+import { useUserDataStore } from "../../store/store";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -18,6 +19,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Login Failed !");
+
+  const setStoreUserData = useUserDataStore(state => state.setStoreUserData)
 
   const handleSubmit = async () => {
     if (username && password) {
@@ -28,6 +31,7 @@ const LoginPage = () => {
       const loginHandle = await userLoginAction(data);
       if (loginHandle.success) {
         localStorage.setItem("userCredentialGoal", loginHandle.login.username);
+        setStoreUserData(loginHandle.login)
         navigate("/");
       } else {
         setSnackbarOpen(true);

@@ -92,7 +92,8 @@ exports.updateGoalControllerFunc = async (req, res) => {
     data.goal = { ...data.goal, bankVerification: data.bankStatus };
     updatedGoal.goals[goalIndex] = data.goal;
     console.log(data.goal);
-    if (data.bankStatus === "verified" && data.amountToUpdate > 0) {
+    
+    if ( (data.bankStatus === "verified" || data.bankStatus === "pending") && data.amountToUpdate >= 0) {
       const bankResponse = await sendUpdateReserveFundRequestToBank(data);
       if (bankResponse.success) {
         await updatedGoal.save();
@@ -117,7 +118,7 @@ exports.updateGoalControllerFunc = async (req, res) => {
 };
 
 // the route for this function  => /api/goal/delete-goal (post)
-// data coming in => { username, goalName, bankVerification }
+// data coming in => { username, goalName, bankVerification, goalAmount (current) }
 exports.deleteGoalControllerFunc = async (req, res) => {
   const data = req.body;
   try {
@@ -126,9 +127,9 @@ exports.deleteGoalControllerFunc = async (req, res) => {
       (goal) => goal.goalName === data.goalName
     );
     deletegoal.goals.splice(goalIndex, 1);
-
+    const responseGoal = deletegoal.goals
     await deletegoal.save();
-    res.json({ success: true, message: "Goal deleted successfully" });
+    res.json({ success: true, message: "Goal deleted successfully", afterDeleteGoal: responseGoal });
   } catch (error) {
     console.log(error);
     res.json({ success: false, error });
@@ -151,6 +152,7 @@ exports.deleteGoalControllerFunc = async (req, res) => {
         {
           username: data.username,
           goalName: data.goalName,
+          goalAmount: data.goalAmount
         }
       );
       console.log(bankResponse);

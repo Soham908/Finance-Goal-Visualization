@@ -5,6 +5,7 @@ import { Grid, IconButton, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import GoalCardSkeleton from "../components/GoalCardSkeleton";
+import { useUserGoalStore } from "../store/store";
 
 const FinanceGoals = ({ sliceNum }) => {
   const [goalData, setGoalData] = useState([
@@ -21,6 +22,9 @@ const FinanceGoals = ({ sliceNum }) => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
 
+  const userGoalData = useUserGoalStore(state => state.goalData)
+  const setStoreGoalData = useUserGoalStore(state => state.setStoreGoalData)
+
   var slice = sliceNum || goalData?.length;
 
   useEffect(() => {
@@ -28,6 +32,7 @@ const FinanceGoals = ({ sliceNum }) => {
       const response = await fetchGoalAction(username);
       setGoalData(response?.goals);
       setLoading(false)
+      setStoreGoalData(response?.goals)
     };
     getGoalData();
     slice = goalData.length;
@@ -68,8 +73,8 @@ const FinanceGoals = ({ sliceNum }) => {
                 </Grid>
               ))
             ) : (
-              goalData && goalData[0]?.goalName &&
-              goalData?.slice(0, slice)?.map((value, index) => {
+              userGoalData && userGoalData[0]?.goalName &&
+              userGoalData?.slice(0, slice)?.map((value, index) => {
                 return (
                   <Grid item key={index} margin={1}
                     sx={{ width: { xs: "90%", sm: "45%", md: "30%" } }}

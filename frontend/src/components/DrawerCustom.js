@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   Drawer,
   List,
@@ -19,8 +19,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import SavingsIcon from '@mui/icons-material/Savings';
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../App";
 import { Logout } from "@mui/icons-material";
+import { useUserDataStore } from "../store/store";
 
 const DrawerCustom = () => {
 
@@ -28,7 +28,8 @@ const DrawerCustom = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-  const { userData } = useContext(UserContext)
+  const username = useUserDataStore(state => state.userData.username)
+  const setStoreUserData = useUserDataStore(state => state.setStoreUserData)
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
@@ -61,7 +62,7 @@ const DrawerCustom = () => {
       <Toolbar>
           <AccountCircleIcon sx={{ width: 33, height: 33, color: 'wheat' }}/>
           <Typography sx={{ marginLeft: 1, fontSize: 22 }}>
-            {userData?.username}
+            { username }
           </Typography>
         </Toolbar>
       <Divider sx={{ backgroundColor: 'wheat' }}/>
@@ -74,12 +75,13 @@ const DrawerCustom = () => {
             { text: "Login", icon: <LoginIcon />, onClick: () => {navigate("/login"); toggleDrawer(); }},
             { text: "Logout", icon: <Logout />, onClick: () => {
               localStorage.removeItem('userCredentialGoal')
+              setStoreUserData({})
               toggleDrawer();
               navigate("/"); 
             }},
           ].map((item, index) => (
           <ListItemButton
-            key={item.text}
+            key={index}
             sx={{
               padding: "8px 16px",
               "&:hover": { backgroundColor: "black" },

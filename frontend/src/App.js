@@ -7,23 +7,16 @@ import Homepage from "./pages/Homepage";
 import Articles from "./pages/Articles";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
-import { createContext, useEffect, useState } from "react";
 import ArticlePage from "./components/ArticlePage";
+import { useUserDataStore } from "./store/store";
 
-export const UserContext = createContext();
 
 function App() {
-  const [userData, setUserData] = useState("");
   const username = localStorage.getItem("userCredentialGoal");
-
-  useEffect(() => {
-    if (!username) {
-      setUserData("");
-    } else setUserData({ username });
-  }, []);
+  const setStoreUserData = useUserDataStore(state => state.setStoreUserData)
+  setStoreUserData({ username })
 
   return (
-    <UserContext.Provider value={{ userData, setUserData }}>
       <Box sx={{ display: "flex",  backgroundColor: "#050505" }}>
         <DrawerCustom />
         <Routes>
@@ -36,7 +29,6 @@ function App() {
           <Route path="/view-article" element={<ArticlePage />} />
         </Routes>
       </Box>
-    </UserContext.Provider>
   );
 }
 

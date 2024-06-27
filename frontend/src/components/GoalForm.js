@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -15,10 +15,10 @@ import {
 } from "@mui/material";
 import { createGoalAction, updateGoalAction } from "../actions/goalActions";
 import DecimalValidatedNumberInput from "./TagValidatedTextField";
-import { UserContext } from "../App";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CheckboxStyled, FormControlStyle, TextFieldSelectStyle, TextFieldStyle } from "../constants/Constants";
 import SlideSnackbar from "./SlideSnackbar";
+import { useUserDataStore } from "../store/store";
 
 const priorities = ["Low", "Medium", "High"];
 const tags = [
@@ -57,7 +57,7 @@ const GoalForm = () => {
 
   const [selectOpen, setSelectOpen] = useState(false);
   const [checked, setChecked] = useState(false);
-  const { userData } = useContext(UserContext);
+  const username = useUserDataStore(state => state.userData.username)
   const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -84,10 +84,10 @@ const GoalForm = () => {
       setDisableButton(false)
       return
     }
-    const bankStatus = checked ? "verified" : "required";
+    const bankStatus = location?.state?.goalData?.bankVerification === "verified" && checked ? "verified" : checked && "pending";
     const data = {
       goal,
-      username: userData?.username,
+      username: username,
       bankStatus,
       oldGoalName,
       amountToUpdate: goal.currentAmount - oldReserveAmount

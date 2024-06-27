@@ -13,6 +13,7 @@ import { CheckboxStyled, TextFieldStyle } from "../../constants/Constants";
 import SlideSnackbar from "../../components/SlideSnackbar";
 import { userRegisterAction } from "../../actions/authAction";
 import { userRegisterWithBankAPI } from "../../actions/userBankAuthAction";
+import { useUserDataStore } from "../../store/store";
 
 const RegisterPage = () => {
   const [username, setUsername] = useState("");
@@ -24,6 +25,8 @@ const RegisterPage = () => {
   );
   const [checked, setChecked] = useState(false)
 
+  const setStoreUserData = useUserDataStore(state => state.setStoreUserData)
+
   const register = async (bankVerified) => {
     const data = {
       username,
@@ -33,6 +36,7 @@ const RegisterPage = () => {
     const registerHandle = await userRegisterAction(data);
     if (registerHandle.success) {
       localStorage.setItem("userCredentialGoal", registerHandle.register.username);
+      setStoreUserData(registerHandle.register)
       navigate("/");
     }
   }

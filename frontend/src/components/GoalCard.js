@@ -1,11 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
   Typography,
   Chip,
   Box,
-  Grid,
   IconButton,
   CardHeader,
   Tooltip,
@@ -18,13 +17,12 @@ import {
   LinearProgress,
   Menu,
   MenuItem,
-  CardMedia,
 } from "@mui/material";
 import { CheckCircle, Pending, ErrorOutline, MoreVert, Edit, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { deleteGoalAction } from "../actions/goalActions";
-import { UserContext } from "../App";
 import SlideSnackbar from "./SlideSnackbar";
+import { useUserDataStore, useUserGoalStore } from "../store/store";
 
 const GoalCard = ({ goal }) => {
   const {
@@ -41,7 +39,10 @@ const GoalCard = ({ goal }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate()
   const [deleteObject, setDeleteObject] = useState(null)
-  const { userData } = useContext(UserContext)
+  
+  const username = useUserDataStore(state => state.userData.username)
+  const setStoreGoalData = useUserGoalStore(state => state.setStoreGoalData)
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -101,12 +102,13 @@ const GoalCard = ({ goal }) => {
       return 
     }
     const data = {
-      username: userData.username,
+      username: username,
       goalName: deleteObject.goalName,
-      bankVerification: deleteObject.bankVerification
+      bankVerification: deleteObject.bankVerification,
+      goalAmount: currentAmount
     }
-    await deleteGoalAction(data)
-    navigate('/finance-goals')
+    const response = await deleteGoalAction(data)
+    setStoreGoalData(response.afterDeleteGoal)
   }
 
   const progress = (currentAmount / targetAmount) * 100;
