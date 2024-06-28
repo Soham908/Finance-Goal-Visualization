@@ -92,8 +92,25 @@ exports.updateGoalControllerFunc = async (req, res) => {
     data.goal = { ...data.goal, bankVerification: data.bankStatus };
     updatedGoal.goals[goalIndex] = data.goal;
     console.log(data.goal);
-    
-    if ( (data.bankStatus === "verified" || data.bankStatus === "pending") && data.amountToUpdate >= 0) {
+
+    if (data.bankStatus === "pending" && data.amountToUpdate >= 0) {
+      const bankResponse = await sendUpdateReserveFundRequestToBank({ ...data, amountToUpdate: data.goal.currentAmount });
+      if (bankResponse.success) {
+        await updatedGoal.save();
+        res.json({
+          success: true,
+          updatedGoal,
+        });
+      } else res.json({ success: false, message: bankResponse.message });
+    } else {
+      await updatedGoal.save();
+      res.json({
+        success: true,
+        message: "goal details updated, bank request not needed to be sent",
+      });
+    }
+
+    if (data.bankStatus === "verified" && data.amountToUpdate >= 0) {
       const bankResponse = await sendUpdateReserveFundRequestToBank(data);
       if (bankResponse.success) {
         await updatedGoal.save();
@@ -127,9 +144,13 @@ exports.deleteGoalControllerFunc = async (req, res) => {
       (goal) => goal.goalName === data.goalName
     );
     deletegoal.goals.splice(goalIndex, 1);
-    const responseGoal = deletegoal.goals
+    const responseGoal = deletegoal.goals;
     await deletegoal.save();
-    res.json({ success: true, message: "Goal deleted successfully", afterDeleteGoal: responseGoal });
+    res.json({
+      success: true,
+      message: "Goal deleted successfully",
+      afterDeleteGoal: responseGoal,
+    });
   } catch (error) {
     console.log(error);
     res.json({ success: false, error });
@@ -152,7 +173,7 @@ exports.deleteGoalControllerFunc = async (req, res) => {
         {
           username: data.username,
           goalName: data.goalName,
-          goalAmount: data.goalAmount
+          goalAmount: data.goalAmount,
         }
       );
       console.log(bankResponse);
