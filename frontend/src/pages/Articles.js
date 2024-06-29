@@ -6,8 +6,11 @@ import { useUserGoalStore } from "../store/store";
 const Articles = ({ category }) => {
 
   const goalDataStore = useUserGoalStore(state => state.goalData)
-  const cat = (goalDataStore[0].goalTags);
-
+  var cat = category;
+  if (goalDataStore[0]?.goalTags){
+    cat = goalDataStore[0]?.goalTags[0]
+  }
+  console.log(cat);
   return (
     <Grid container display="flex">
       {!category && (
@@ -27,7 +30,7 @@ const Articles = ({ category }) => {
             category ? 
             <Box>
               <Grid container justifyContent='space-evenly'>
-                {articlesData[cat[0]].map((article, index) => (
+                {articlesData[cat].map((article, index) => (
                   <Grid item key={index} marginTop={5} sx={{ width: { xs: '90%', sm: '45%', md: '23%' } }}>
                     <ArticleCard article={article} />
                   </Grid>
