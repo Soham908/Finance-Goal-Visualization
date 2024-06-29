@@ -1,8 +1,12 @@
 import { Grid, Typography, Box } from "@mui/material";
 import articlesData from "../data/articles.json"; 
 import ArticleCard from "../components/ArticleCard";
+import { useUserGoalStore } from "../store/store";
 
 const Articles = ({ category }) => {
+
+  const goalDataStore = useUserGoalStore(state => state.goalData)
+  const cat = (goalDataStore[0].goalTags);
 
   return (
     <Grid container display="flex">
@@ -23,7 +27,7 @@ const Articles = ({ category }) => {
             category ? 
             <Box>
               <Grid container justifyContent='space-evenly'>
-                {articlesData[category].map((article, index) => (
+                {articlesData[cat[0]].map((article, index) => (
                   <Grid item key={index} marginTop={5} sx={{ width: { xs: '90%', sm: '45%', md: '23%' } }}>
                     <ArticleCard article={article} />
                   </Grid>
