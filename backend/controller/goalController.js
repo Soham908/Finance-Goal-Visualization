@@ -93,45 +93,105 @@ exports.updateGoalControllerFunc = async (req, res) => {
     updatedGoal.goals[goalIndex] = data.goal;
     console.log(data.goal);
 
+    var message = "";
+    var success = "";
+
     if (data.bankStatus === "pending" && data.amountToUpdate >= 0) {
-      const bankResponse = await sendUpdateReserveFundRequestToBank({ ...data, amountToUpdate: data.goal.currentAmount });
+      const bankResponse = await sendUpdateReserveFundRequestToBank({
+        ...data,
+        amountToUpdate: data.goal.currentAmount,
+      });
       if (bankResponse.success) {
         await updatedGoal.save();
-        res.json({
-          success: true,
-          updatedGoal,
-        });
-      } else res.json({ success: false, message: bankResponse.message });
+        success = true;
+        // res.json({
+        //   success: true,
+        //   updatedGoal,
+        // });
+      } else {
+        success = false;
+        message = bankResponse.message;
+      }
     } else {
       await updatedGoal.save();
-      res.json({
-        success: true,
-        message: "goal details updated, bank request not needed to be sent",
-      });
+      success = true;
+      message = "goal details updated, bank request not needed to be sent";
     }
 
     if (data.bankStatus === "verified" && data.amountToUpdate >= 0) {
       const bankResponse = await sendUpdateReserveFundRequestToBank(data);
       if (bankResponse.success) {
         await updatedGoal.save();
-        res.json({
-          success: true,
-          updatedGoal,
-        });
-      } else res.json({ success: false, message: bankResponse.message });
+        success = true;
+      } else {
+        success = false;
+        message = bankResponse.message;
+      }
     } else {
       await updatedGoal.save();
-      res.json({
-        success: true,
-        message: "goal details updated, bank request not needed to be sent",
-      });
+      success = true;
+      message = "goal details updated, bank request not needed to be sent";
     }
+
+    res.json({
+      success,
+      message,
+      updatedGoal
+    })
+
   } catch (error) {
     console.log(error);
   }
+};
 
-  // only need to call the bank notification stuff first if the bankVerification is pending, or verified
-  // if the user changes the goalName, update the currentAmount,
+// only need incoming = username, goalname, and additionalamount
+// so what i was aiming to do, when the addfunds is clicked through the card, update the current amount
+// also now i againneed to check if verified and if not verified
+// but i guess here it will be easy only 1 if will be required
+// the route for this function  => /api/goal/update-current-amount (post)
+exports.updateCurrentAmountFromCard = async (req, res) => {
+  try {
+    const data = req.body;
+    console.log(data);
+    const updatedGoal = await userModel.findOne({
+      username: data.username,
+    });
+
+    const goal = updatedGoal.goals.find(
+      (goal) => goal.goalName === data.oldGoalName
+    );
+    console.log(typeof goal.currentAmount, typeof data.amountToUpdate);
+    goal.currentAmount += parseFloat(data.amountToUpdate);
+
+    if (goal.bankVerification === "verified") {
+      const bankResponse = await sendUpdateReserveFundRequestToBank({
+        ...data,
+        amountToUpdate: data.amountToUpdate,
+      });
+      var message = "";
+      var success = "";
+      if (bankResponse.success) {
+        await updatedGoal.save();
+        success = true;
+        message = bankResponse.message;
+      } else {
+        message = bankResponse.message;
+        success = bankResponse.success;
+      }
+    } else {
+      await updatedGoal.save();
+      success = true;
+      message = "Goal db updated";
+    }
+    console.log(updatedGoal);
+    res.json({
+      success,
+      message,
+      updatedGoal,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 // the route for this function  => /api/goal/delete-goal (post)

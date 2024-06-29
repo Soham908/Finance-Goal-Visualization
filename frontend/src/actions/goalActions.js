@@ -38,3 +38,9 @@ export const updateGoalAction = async (data) => {
   const response = await axios.post(url + "/update-goal", data)
   return response.data
 }
+
+export const updateGoalAddFunds = async (data) => {
+  console.log(data);
+  const response = await axios.post(url + "/update-current-amount", data)
+  return response.data
+}

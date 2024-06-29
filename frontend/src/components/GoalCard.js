@@ -17,10 +17,12 @@ import {
   LinearProgress,
   Menu,
   MenuItem,
+  Grid,
+  TextField,
 } from "@mui/material";
 import { CheckCircle, Pending, ErrorOutline, MoreVert, Edit, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { deleteGoalAction } from "../actions/goalActions";
+import { deleteGoalAction, updateGoalAction, updateGoalAddFunds } from "../actions/goalActions";
 import SlideSnackbar from "./SlideSnackbar";
 import { useUserDataStore, useUserGoalStore } from "../store/store";
 
@@ -42,9 +44,12 @@ const GoalCard = ({ goal }) => {
   
   const username = useUserDataStore(state => state.userData.username)
   const setStoreGoalData = useUserGoalStore(state => state.setStoreGoalData)
+  const goalDataStore = useUserGoalStore(state => state.goalData)
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [addFundsOpen, setAddFundsOpen] = useState(false);
+  const [amount, setAmount] = useState("")
 
   const handleDeleteClick = () => {
     setOpen(true);
@@ -54,6 +59,36 @@ const GoalCard = ({ goal }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleAddFundsClose = () => {
+    setAddFundsOpen(false);
+  };
+
+  const handleAddFunds = async () => {
+    // const amt = bankVerification ? 
+    const data = {
+      goal,
+      username: username,
+      bankStatus: bankVerification,
+      oldGoalName: goalName,
+      amountToUpdate: amount
+    };
+    setAddFundsOpen(false)
+    setAmount("")
+    
+    const response = await updateGoalAddFunds(data);
+    console.log(response);
+    if (!response.success) {
+      setSnackbarOpen(true);
+      setSnackbarMessage(response.message);
+      // setDisableButton(false)
+      return;
+    }
+    console.log(typeof goalDataStore, typeof response.updatedGoal);
+    setStoreGoalData(response?.updatedGoal?.goals);
+    setSnackbarOpen(true)
+    setSnackbarMessage("Money Added Successfully")
+  }
 
   const handleConfirmDelete = () => {
     onDelete(goal);
@@ -174,11 +209,24 @@ const GoalCard = ({ goal }) => {
             {progress.toFixed(2)}% funded
           </Typography>
         </Box>
-        <Box display="flex" flexWrap="wrap" gap={1} mt={1}>
+        <Box display="flex" flexWrap="wrap" gap={1} mt={1} justifyContent='space-between'>
+          <Grid>
           {goalTags?.map((tag) => (
-            <Chip key={tag} label={tag} color="primary" variant="outlined" clickable />
+            <Chip key={tag} label={tag} color="primary" variant="outlined" clickable sx={{ marginRight: 1  }}/>
           ))}
           <Chip key={goalPriority} label={goalPriority} color="secondary" variant="outlined" clickable />
+          </Grid>
+          <Grid>
+          <Button variant="outlined" size="small" onClick={() => {
+            if(bankVerification === 'pending'){
+              setSnackbarOpen(true); 
+              setSnackbarMessage("Bank Status pending, cannot delete right now");
+              return 
+            }
+            setAddFundsOpen(true)
+          }}
+            >Add Funds</Button>
+          </Grid>
         </Box>
       </CardContent>
       <Dialog open={open} onClose={handleClose}>
@@ -194,6 +242,35 @@ const GoalCard = ({ goal }) => {
           </Button>
           <Button onClick={handleConfirmDelete} color="primary" autoFocus>
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={addFundsOpen} onClose={handleAddFundsClose}>
+        <DialogTitle>Add Funds</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Your Current Target Amount is : { targetAmount }
+          </Typography>
+          <Typography>
+            How much amount to add more to the current amount : { currentAmount }
+          </Typography>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Current Amount"
+            type="number"
+            fullWidth
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            autoComplete="off"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAddFundsClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleAddFunds} color="primary">
+            Add
           </Button>
         </DialogActions>
       </Dialog>
