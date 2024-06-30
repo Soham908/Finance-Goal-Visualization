@@ -7,7 +7,7 @@ const Articles = ({ category }) => {
 
   const goalDataStore = useUserGoalStore(state => state.goalData)
   var cat = category;
-  if (goalDataStore[0]?.goalTags){
+  if ( goalDataStore && goalDataStore[0]?.goalTags){
     cat = goalDataStore[0]?.goalTags[0]
   }
   console.log(cat);
