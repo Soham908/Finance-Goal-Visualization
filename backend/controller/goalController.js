@@ -104,10 +104,6 @@ exports.updateGoalControllerFunc = async (req, res) => {
       if (bankResponse.success) {
         await updatedGoal.save();
         success = true;
-        // res.json({
-        //   success: true,
-        //   updatedGoal,
-        // });
       } else {
         success = false;
         message = bankResponse.message;
@@ -145,9 +141,6 @@ exports.updateGoalControllerFunc = async (req, res) => {
 };
 
 // only need incoming = username, goalname, and additionalamount
-// so what i was aiming to do, when the addfunds is clicked through the card, update the current amount
-// also now i againneed to check if verified and if not verified
-// but i guess here it will be easy only 1 if will be required
 // the route for this function  => /api/goal/update-current-amount (post)
 exports.updateCurrentAmountFromCard = async (req, res) => {
   try {

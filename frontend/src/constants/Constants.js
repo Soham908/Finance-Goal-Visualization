@@ -19,6 +19,9 @@ export const TextFieldStyle = {
   "& input": {
     color: "white",
   },
+  "& .MuiFormHelperText-root": {
+    color: "lightblue",
+  },
 };
 
 export const FormControlStyle = {

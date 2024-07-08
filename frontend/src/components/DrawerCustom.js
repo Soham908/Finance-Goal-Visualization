@@ -20,7 +20,7 @@ import SavingsIcon from '@mui/icons-material/Savings';
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from "react-router-dom";
 import { Logout } from "@mui/icons-material";
-import { useUserDataStore } from "../store/store";
+import { useUserDataStore, useUserGoalStore } from "../store/store";
 
 const DrawerCustom = () => {
 
@@ -30,6 +30,7 @@ const DrawerCustom = () => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
   const username = useUserDataStore(state => state.userData.username)
   const setStoreUserData = useUserDataStore(state => state.setStoreUserData)
+  const setStoreGoalData = useUserGoalStore(state => state.setStoreGoalData)
 
   const toggleDrawer = () => {
     setOpenDrawer(!openDrawer);
@@ -76,6 +77,7 @@ const DrawerCustom = () => {
             { text: "Logout", icon: <Logout />, onClick: () => {
               localStorage.removeItem('userCredentialGoal')
               setStoreUserData({})
+              setStoreGoalData({})
               toggleDrawer();
               navigate("/"); 
             }},
